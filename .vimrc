@@ -460,6 +460,15 @@ call plug#end()
 colorscheme one
 set background=dark
 
+" ctrlp
+" ---------------------------------------------------
+
+let g:ctrlp_working_path_mode = ''
+" let g:ctrlp_match_window = 'bottom,order:ttb,min:1,max:10,results:10'
+let g:ctrlp_follow_symlinks = 2
+let g:ctrlp_max_files = 0 " Unset cap of 10,000 files so we find everything
+nnoremap <unique> <leader>bs :CtrlPBuffer<CR>
+
 " vim-airline
 " ---------------------------------------------------
 
