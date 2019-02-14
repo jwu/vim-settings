@@ -300,12 +300,6 @@ if has('autocmd')
     au BufNewFile,BufRead *.avs set syntax=avs " for avs syntax file.
     au BufNewFile,BufRead *.{vs,fs,hlsl,fx,fxh,cg,cginc,vsh,psh,shd,glsl,shader} set ft=glsl
 
-    " DISABLE {
-    " NOTE: will have problem with exvim, because exvim use exES_CWD as working directory for tag and other thing
-    " Change current directory to the file of the buffer (from Script#65"CD.vim"
-    " au   BufEnter *   execute ":lcd " . expand("%:p:h")
-    " } DISABLE end
-
     " ------------------------------------------------------------------
     " Desc: file types
     " ------------------------------------------------------------------
@@ -442,7 +436,11 @@ nnoremap <silent> <leader>sw "_yiw:s/\(\%#\w\+\)\(\W\+\)\(\w\+\)/\3\2\1/<cr><c-o
 
 call plug#begin('~/.vim/plugged')
 
+" Plug 'Shougo/unite.vim'
+" Plug 'Shougo/vimfiler.vim'
 Plug 'exvim/ex-easyhl'
+Plug 'exvim/ex-searchcompl'
+Plug 'exvim/ex-showmarks'
 Plug 'kien/ctrlp.vim'
 Plug 'rakr/vim-one'
 Plug 'scrooloose/nerdtree'
@@ -459,6 +457,27 @@ call plug#end()
 
 colorscheme one
 set background=dark
+
+" ex-showmarks
+" ---------------------------------------------------
+
+let g:showmarks_enable = 1
+let showmarks_include = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
+
+" Ignore help, quickfix, non-modifiable buffers
+let showmarks_ignore_type = "hqm"
+
+" Hilight lower & upper marks
+let showmarks_hlline_lower = 1
+let showmarks_hlline_upper = 0
+
+" For marks a-z
+hi clear ShowMarksHLl
+hi ShowMarksHLl term=bold cterm=none ctermbg=lightblue gui=none guibg=SlateBlue
+
+" For marks A-Z
+hi clear ShowMarksHLu
+hi ShowMarksHLu term=bold cterm=bold ctermbg=lightred ctermfg=darkred gui=bold guibg=lightred guifg=darkred
 
 " ctrlp
 " ---------------------------------------------------
