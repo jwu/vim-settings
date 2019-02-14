@@ -449,6 +449,7 @@ Plug 'tikhomirov/vim-glsl'
 Plug 'tpope/vim-commentary'
 Plug 'tpope/vim-surround'
 Plug 'vim-airline/vim-airline'
+Plug 'mileszs/ack.vim'
 
 call plug#end()
 
@@ -509,5 +510,12 @@ xmap s <Plug>VSurround
 
 xmap <leader>/ <Plug>Commentary
 nmap <leader>/ <Plug>CommentaryLine
+
+" ack.vim
+" ---------------------------------------------------
+
+if executable('rg')
+  let g:ackprg = 'rg --vimgrep'
+endif
 
 " vim:ts=2:sw=2:sts=2 et fdm=marker:
