@@ -518,4 +518,7 @@ if executable('rg')
   let g:ackprg = 'rg --vimgrep'
 endif
 
+cnoreabbrev Ack Ack!
+nnoremap <Leader>gg :execute 'Ack!<cword>'<cr>
+
 " vim:ts=2:sw=2:sts=2 et fdm=marker:
