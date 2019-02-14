@@ -511,6 +511,8 @@ xmap s <Plug>VSurround
 xmap <leader>/ <Plug>Commentary
 nmap <leader>/ <Plug>CommentaryLine
 
+autocmd FileType cs setlocal commentstring=\/\/\ %s
+
 " ack.vim
 " ---------------------------------------------------
 
@@ -519,6 +521,6 @@ if executable('rg')
 endif
 
 cnoreabbrev Ack Ack!
-nnoremap <Leader>gg :execute 'Ack!<cword>'<cr>
+nnoremap <leader>gg :execute 'Ack!<cword>'<cr>
 
 " vim:ts=2:sw=2:sts=2 et fdm=marker:
