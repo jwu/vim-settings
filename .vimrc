@@ -522,5 +522,6 @@ endif
 
 cnoreabbrev Ack Ack!
 nnoremap <leader>gg :execute 'Ack!<cword>'<cr>
+nnoremap <leader>F :Ack!<space>
 
 " vim:ts=2:sw=2:sts=2 et fdm=marker:
