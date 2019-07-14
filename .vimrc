@@ -436,20 +436,43 @@ nnoremap <silent> <leader>sw "_yiw:s/\(\%#\w\+\)\(\W\+\)\(\w\+\)/\3\2\1/<cr><c-o
 
 call plug#begin('~/.vim/plugged')
 
-" Plug 'Shougo/unite.vim'
-" Plug 'Shougo/vimfiler.vim'
-Plug 'exvim/ex-easyhl'
-Plug 'exvim/ex-searchcompl'
-Plug 'exvim/ex-showmarks'
-Plug 'kien/ctrlp.vim'
+" color theme
 Plug 'rakr/vim-one'
-Plug 'scrooloose/nerdtree'
+
+" visual enhancement
+Plug 'vim-airline/vim-airline'
+
+" text highlight
+Plug 'exvim/ex-easyhl'
+Plug 'exvim/ex-showmarks'
+
+" syntax highlight/check
 Plug 'scrooloose/syntastic'
 Plug 'tikhomirov/vim-glsl'
+
+" complete
+Plug 'exvim/ex-searchcompl'
+Plug 'exvim/ex-autocomplpop'
+" TODO: Plug 'prabirshrestha/asyncomplete.vim'
+" TODO: Plug 'maralla/completor.vim'
+" TODO: Plug 'neoclide/coc.nvim'
+
+" file operation
+Plug 'kien/ctrlp.vim'
+Plug 'scrooloose/nerdtree'
+Plug 'mileszs/ack.vim'
+" TODO Plug 'dyng/ctrlsf.vim'
+" TODO Plug 'mhinz/vim-grepper'
+
+" text editing
 Plug 'tpope/vim-commentary'
 Plug 'tpope/vim-surround'
-Plug 'vim-airline/vim-airline'
-Plug 'mileszs/ack.vim'
+Plug 'vim-scripts/VisIncr'
+Plug 'godlygeek/tabular'
+
+" Deprecated
+" Plug 'Shougo/unite.vim'
+" Plug 'Shougo/vimfiler.vim'
 
 call plug#end()
 
@@ -459,14 +482,43 @@ call plug#end()
 colorscheme one
 set background=dark
 
+" vim-airline
+" ---------------------------------------------------
+
+let g:airline_theme='one'
+
+if has('gui_running')
+  let g:airline_powerline_fonts = 1
+else
+  let g:airline_powerline_fonts = 0
+endif
+
+" ex-easyhl
+" ---------------------------------------------------
+
+" hi clear EX_HL_cursorhl
+" hi EX_HL_cursorhl gui=none guibg=white term=none cterm=none ctermbg=white 
+
+hi clear EX_HL_label1
+hi EX_HL_label1 gui=none guibg=lightcyan term=none cterm=none ctermbg=lightcyan
+
+hi clear EX_HL_label2
+hi EX_HL_label2 gui=none guibg=lightmagenta term=none cterm=none ctermbg=lightmagenta
+
+hi clear EX_HL_label3
+hi EX_HL_label3 gui=none guibg=lightred term=none cterm=none ctermbg=lightred
+
+hi clear EX_HL_label4
+hi EX_HL_label4 gui=none guibg=lightgreen term=none cterm=none ctermbg=lightgreen
+
 " ex-showmarks
 " ---------------------------------------------------
 
 let g:showmarks_enable = 1
-let showmarks_include = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
+let showmarks_include = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
 
 " Ignore help, quickfix, non-modifiable buffers
-let showmarks_ignore_type = "hqm"
+let showmarks_ignore_type = 'hqm'
 
 " Hilight lower & upper marks
 let showmarks_hlline_lower = 1
@@ -489,29 +541,12 @@ let g:ctrlp_follow_symlinks = 2
 let g:ctrlp_max_files = 0 " Unset cap of 10,000 files so we find everything
 nnoremap <unique> <leader>bs :CtrlPBuffer<CR>
 
-" vim-airline
+" nerdtree
 " ---------------------------------------------------
 
-let g:airline_theme='one'
-
-if has('gui_running')
-  let g:airline_powerline_fonts = 1
-else
-  let g:airline_powerline_fonts = 0
-endif
-
-" vim-surround: invoke when you select words and press 's'
-" ---------------------------------------------------
-
-xmap s <Plug>VSurround
-
-" vim-commentary
-" ---------------------------------------------------
-
-xmap <leader>/ <Plug>Commentary
-nmap <leader>/ <Plug>CommentaryLine
-
-autocmd FileType cs setlocal commentstring=\/\/\ %s
+let g:NERDTreeWinSize = 30
+let g:NERDTreeMouseMode = 1
+let g:NERDTreeMapToggleZoom = '<Space>'
 
 " ack.vim
 " ---------------------------------------------------
@@ -523,5 +558,33 @@ endif
 cnoreabbrev Ack Ack!
 nnoremap <leader>gg :execute 'Ack!<cword>'<cr>
 nnoremap <leader>F :Ack!<space>
+
+" vim-commentary
+" ---------------------------------------------------
+
+xmap <leader>/ <Plug>Commentary
+nmap <leader>/ <Plug>CommentaryLine
+
+autocmd FileType cs setlocal commentstring=\/\/\ %s
+
+" vim-surround
+" ---------------------------------------------------
+
+xmap s <Plug>VSurround
+
+" tabular
+" ---------------------------------------------------
+
+nnoremap <silent> <leader>= :call g:Tabular(1)<CR>
+xnoremap <silent> <leader>= :call g:Tabular(0)<CR>
+function! g:Tabular(ignore_range) range
+  let c = getchar()
+  let c = nr2char(c)
+  if a:ignore_range == 0
+    exec printf('%d,%dTabularize /%s', a:firstline, a:lastline, c)
+  else
+    exec printf('Tabularize /%s', c)
+  endif
+endfunction
 
 " vim:ts=2:sw=2:sts=2 et fdm=marker:
