@@ -497,19 +497,19 @@ endif
 " ---------------------------------------------------
 
 " hi clear EX_HL_cursorhl
-" hi EX_HL_cursorhl gui=none guibg=white term=none cterm=none ctermbg=white 
+" hi EX_HL_cursorhl gui=none guibg=white term=none cterm=none ctermbg=white
 
 hi clear EX_HL_label1
-hi EX_HL_label1 gui=none guibg=lightcyan term=none cterm=none ctermbg=lightcyan
+hi EX_HL_label1 gui=none guibg=darkcyan term=none cterm=none ctermbg=darkcyan
 
 hi clear EX_HL_label2
-hi EX_HL_label2 gui=none guibg=lightmagenta term=none cterm=none ctermbg=lightmagenta
+hi EX_HL_label2 gui=none guibg=darkmagenta term=none cterm=none ctermbg=darkmagenta
 
 hi clear EX_HL_label3
-hi EX_HL_label3 gui=none guibg=lightred term=none cterm=none ctermbg=lightred
+hi EX_HL_label3 gui=none guibg=darkblue term=none cterm=none ctermbg=darkblue
 
 hi clear EX_HL_label4
-hi EX_HL_label4 gui=none guibg=lightgreen term=none cterm=none ctermbg=lightgreen
+hi EX_HL_label4 gui=none guibg=darkgreen term=none cterm=none ctermbg=darkgreen
 
 " ex-showmarks
 " ---------------------------------------------------
