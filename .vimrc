@@ -79,15 +79,15 @@ let backup_dir = data_dir . 'backup'
 let swap_dir = data_dir . 'swap'
 
 if finddir(data_dir) == ''
-  silent call mkdir(data_dir)
+  silent call mkdir(data_dir, 'p', 0700)
 endif
 
 if finddir(backup_dir) == ''
-  silent call mkdir(backup_dir)
+  silent call mkdir(backup_dir, 'p', 0700)
 endif
 
 if finddir(swap_dir) == ''
-  silent call mkdir(swap_dir)
+  silent call mkdir(swap_dir, 'p', 0700)
 endif
 
 unlet backup_dir
@@ -435,6 +435,9 @@ nnoremap <silent> <leader>sw "_yiw:s/\(\%#\w\+\)\(\W\+\)\(\w\+\)/\3\2\1/<cr><c-o
 "/////////////////////////////////////////////////////////////////////////////
 
 call plug#begin('~/.vim/plugged')
+
+" exvim-lite
+Plug 'jwu/exvim-lite'
 
 " color theme
 Plug 'rakr/vim-one'
