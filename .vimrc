@@ -472,6 +472,7 @@ Plug 'tpope/vim-commentary'
 Plug 'tpope/vim-surround'
 Plug 'vim-scripts/VisIncr'
 Plug 'godlygeek/tabular'
+Plug 'ntpeters/vim-better-whitespace'
 
 " Deprecated
 " Plug 'Shougo/unite.vim'
@@ -589,5 +590,11 @@ function! g:Tabular(ignore_range) range
     exec printf('Tabularize /%s', c)
   endif
 endfunction
+
+" vim-better-whitespace
+" ---------------------------------------------------
+
+let g:better_whitespace_guicolor = 'darkred'
+nnoremap <unique> <leader>w :StripWhitespace<CR>
 
 " vim:ts=2:sw=2:sts=2 et fdm=marker:
