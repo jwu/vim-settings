@@ -1,6 +1,6 @@
 ## Global Search
 
-  - [rg](https://github.com/BurntSushi/ripgrep) 
+  - [rg](https://github.com/BurntSushi/ripgrep)
   - [ag](https://github.com/ggreer/the_silver_searcher)
 
 ## Fonts
