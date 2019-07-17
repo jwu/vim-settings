@@ -497,6 +497,13 @@ else
   let g:airline_powerline_fonts = 0
 endif
 
+" NOTE: When you open lots of buffers and typing text, it is so slow.
+" let g:airline_section_warning = ''
+let g:airline#extensions#tabline#enabled = 1
+let g:airline#extensions#tabline#show_buffers = 1
+let g:airline#extensions#tabline#buffer_nr_show = 1
+let g:airline#extensions#tabline#fnamemod = ':t'
+
 " ex-easyhl
 " ---------------------------------------------------
 
@@ -551,6 +558,7 @@ nnoremap <unique> <leader>bs :CtrlPBuffer<CR>
 let g:NERDTreeWinSize = 30
 let g:NERDTreeMouseMode = 1
 let g:NERDTreeMapToggleZoom = '<Space>'
+nnoremap <unique> <leader>fc :NERDTreeFind<CR>
 
 " ack.vim
 " ---------------------------------------------------
