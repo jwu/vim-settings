@@ -400,15 +400,14 @@ nnoremap <S-Down> <C-W><Down>
 nnoremap <S-Left> <C-W><Left>
 nnoremap <S-Right> <C-W><Right>
 
-" easy buffer navigation
-" NOTE: if we already map to EXbn,EXbp. skip setting this
-if !hasmapto(':EXbn<CR>') && mapcheck('<C-l>','n') == ''
-  nnoremap <C-l> :bn<CR>
-endif
-
-if !hasmapto(':EXbp<CR>') && mapcheck('<C-h>','n') == ''
-  noremap <C-h> :bp<CR>
-endif
+" " NOTE: if we already map to EXbn,EXbp. skip setting this
+" " easy buffer navigation
+" if !hasmapto(':EXbn<CR>') && mapcheck('<C-l>','n') == ''
+"   nnoremap <C-l> :bn<CR>
+" endif
+" if !hasmapto(':EXbp<CR>') && mapcheck('<C-h>','n') == ''
+"   noremap <C-h> :bp<CR>
+" endif
 
 " easy diff goto
 noremap <C-k> [c
@@ -479,6 +478,15 @@ Plug 'ntpeters/vim-better-whitespace'
 " Plug 'Shougo/vimfiler.vim'
 
 call plug#end()
+
+" exvim-lite
+" ---------------------------------------------------
+nnoremap <unique> <silent> <Leader>bd :EXbd<CR>
+nnoremap <unique> <silent> <C-l> :EXbn<CR>
+nnoremap <unique> <silent> <C-h> :EXbp<CR>
+nnoremap <unique> <silent> <C-Tab> :EXbalt<CR>
+nnoremap <unique> <silent> <Leader><Tab> :EXsw<CR>
+nmap <unique> <silent> <Leader><Esc> :EXgp<CR><ESC>
 
 " vim-one
 " ---------------------------------------------------
