@@ -299,6 +299,7 @@ if has('autocmd')
     au BufEnter * :syntax sync fromstart " ensure every file does syntax highlighting (full)
     au BufNewFile,BufRead *.avs set syntax=avs " for avs syntax file.
     au BufNewFile,BufRead *.{vs,fs,hlsl,fx,fxh,cg,cginc,vsh,psh,shd,glsl,shader} set ft=glsl
+    au BufNewFile,BufRead *.shader set ft=shader
 
     " ------------------------------------------------------------------
     " Desc: file types
@@ -462,9 +463,6 @@ Plug 'exvim/ex-autocomplpop'
 " file operation
 Plug 'kien/ctrlp.vim'
 Plug 'scrooloose/nerdtree'
-Plug 'mileszs/ack.vim'
-" TODO Plug 'dyng/ctrlsf.vim'
-" TODO Plug 'mhinz/vim-grepper'
 
 " text editing
 Plug 'tpope/vim-commentary'
@@ -481,12 +479,21 @@ call plug#end()
 
 " exvim-lite
 " ---------------------------------------------------
+
+" buffer operation
 nnoremap <unique> <silent> <Leader>bd :EXbd<CR>
 nnoremap <unique> <silent> <C-l> :EXbn<CR>
 nnoremap <unique> <silent> <C-h> :EXbp<CR>
 nnoremap <unique> <silent> <C-Tab> :EXbalt<CR>
+
+" plugin<->edit window switch
 nnoremap <unique> <silent> <Leader><Tab> :EXsw<CR>
 nmap <unique> <silent> <Leader><Esc> :EXgp<CR><ESC>
+
+" search
+nnoremap <unique> <leader>F :GS<space>
+nnoremap <unique> <leader>gg :EXSearchCWord<CR>
+nnoremap <unique> <leader>gs :call ex#search#toggle_window()<CR>
 
 " vim-one
 " ---------------------------------------------------
@@ -567,17 +574,6 @@ let g:NERDTreeWinSize = 30
 let g:NERDTreeMouseMode = 1
 let g:NERDTreeMapToggleZoom = '<Space>'
 nnoremap <unique> <leader>fc :NERDTreeFind<CR>
-
-" ack.vim
-" ---------------------------------------------------
-
-if executable('rg')
-  let g:ackprg = 'rg --vimgrep'
-endif
-
-cnoreabbrev Ack Ack!
-nnoremap <leader>gg :execute 'Ack!<cword>'<cr>
-nnoremap <leader>F :Ack!<space>
 
 " vim-commentary
 " ---------------------------------------------------
