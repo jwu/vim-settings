@@ -165,13 +165,13 @@ if has('gui_running')
       endif
     elseif WINDOWS()
       if getfontname('DejaVu Sans Mono for Powerline') != ''
-        set guifont=DejaVu\ Sans\ Mono\ for\ Powerline:h11:cANSI
+        set guifont=DejaVu\ Sans\ Mono\ for\ Powerline:h12
       elseif getfontname('DejaVu Sans Mono') != ''
-        set guifont=DejaVu\ Sans\ Mono:h11:cANSI
+        set guifont=DejaVu\ Sans\ Mono:h12
       elseif getfontname('Consolas') != ''
-        set guifont=Consolas:h11:cANSI " this is the default visual studio font
+        set guifont=Consolas:h12
       else
-        set guifont=Lucida_Console:h11:cANSI
+        set guifont=Lucida_Console:h12
       endif
     endif
   endfunction
@@ -212,11 +212,11 @@ if has('gui_running')
 endif
 
 set showfulltag " show tag with function protype.
-set guioptions+=b " present the bottom scrollbar when the longest visible line exceed the window
 
-" disable menu & toolbar
-set guioptions-=m
-set guioptions-=T
+" disable menu & toolbar, add bottom scrollbar
+set guioptions-=m " disable Menu
+set guioptions-=T " disalbe Toolbar
+set guioptions+=b " present the bottom scrollbar when the longest visible line exceed the window
 
 " ------------------------------------------------------------------
 " Desc: Text edit
