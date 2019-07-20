@@ -4,6 +4,10 @@
 
 set nocompatible " be iMproved, required
 
+if has('nvim')
+  set termguicolors
+endif
+
 function! OSX()
   return has('macunix')
 endfunction
@@ -155,9 +159,9 @@ if has('gui_running')
       set guifont=*-lucidatypewriter-medium-r-normal-*-*-180-*-*-m-*-*
     elseif OSX()
       if getfontname('DejaVu Sans Mono for Powerline') != ''
-        set guifont=DejaVu\ Sans\ Mono\ for\ Powerline:h15
+        set guifont=DejaVu\ Sans\ Mono\ for\ Powerline:h13
       elseif getfontname('DejaVu Sans Mono') != ''
-        set guifont=DejaVu\ Sans\ Mono:h15
+        set guifont=DejaVu\ Sans\ Mono:h13
       endif
     elseif WINDOWS()
       if getfontname('DejaVu Sans Mono for Powerline') != ''
@@ -505,8 +509,7 @@ set background=dark
 " ---------------------------------------------------
 
 let g:airline_theme='one'
-
-if has('gui_running')
+if has('gui_running') || has('nvim')
   let g:airline_powerline_fonts = 1
 else
   let g:airline_powerline_fonts = 0
