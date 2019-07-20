@@ -571,6 +571,7 @@ nnoremap <unique> <leader>bs :CtrlPBuffer<CR>
 " ---------------------------------------------------
 
 let g:NERDTreeWinSize = 30
+let g:NERDTreeWinSizeMax = 60
 let g:NERDTreeMouseMode = 1
 let g:NERDTreeMapToggleZoom = '<Space>'
 nnoremap <unique> <leader>fc :NERDTreeFind<CR>
