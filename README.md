@@ -13,3 +13,20 @@
     - `brew cask install vimr`
   - [nvim-qt](https://github.com/equalsraf/neovim-qt)
     - [See the windows installation guide of neovim](https://github.com/neovim/neovim/wiki/Installing-Neovim#windows)
+
+### NeoVim additional setup
+
+**init.vim**
+
+```vim
+set runtimepath^=~/vimfiles
+let &packpath = &runtimepath
+source your\vim\path\.vimrc
+```
+
+**ginit.vim**
+
+```vim
+silent exec 'GuiFont! DejaVu Sans Mono for Powerline:h12'
+call rpcnotify(1, 'Gui', 'Option', 'Tabline', 0)
+```
