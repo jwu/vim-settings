@@ -484,6 +484,15 @@ call plug#end()
 " exvim-lite
 " ---------------------------------------------------
 
+function s:find_file()
+  if g:NERDTree.IsOpen()
+    exec 'NERDTreeFind'
+    return
+  endif
+
+  exec 'EXProjectFind'
+endfunction
+
 " buffer operation
 nnoremap <unique> <silent> <Leader>bd :EXbd<CR>
 nnoremap <unique> <silent> <C-l> :EXbn<CR>
@@ -498,6 +507,9 @@ nmap <unique> <silent> <Leader><Esc> :EXgp<CR><ESC>
 nnoremap <unique> <leader>F :GS<space>
 nnoremap <unique> <leader>gg :EXSearchCWord<CR>
 nnoremap <unique> <leader>gs :call ex#search#toggle_window()<CR>
+
+" project
+nnoremap <unique> <leader>fc :call <SID>find_file()<CR>
 
 " vim-one
 " ---------------------------------------------------
@@ -577,7 +589,6 @@ let g:NERDTreeWinSize = 30
 let g:NERDTreeWinSizeMax = 60
 let g:NERDTreeMouseMode = 1
 let g:NERDTreeMapToggleZoom = '<Space>'
-nnoremap <unique> <leader>fc :NERDTreeFind<CR>
 
 " vim-commentary
 " ---------------------------------------------------
