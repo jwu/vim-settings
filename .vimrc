@@ -460,8 +460,6 @@ Plug 'tikhomirov/vim-glsl'
 " complete
 Plug 'exvim/ex-searchcompl'
 Plug 'exvim/ex-autocomplpop'
-" TODO: Plug 'prabirshrestha/asyncomplete.vim'
-" TODO: Plug 'maralla/completor.vim'
 " TODO: Plug 'neoclide/coc.nvim'
 
 " file operation
