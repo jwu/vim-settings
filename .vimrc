@@ -475,9 +475,8 @@ Plug 'vim-scripts/VisIncr'
 Plug 'godlygeek/tabular'
 Plug 'ntpeters/vim-better-whitespace'
 
-" Deprecated
-" Plug 'Shougo/unite.vim'
-" Plug 'Shougo/vimfiler.vim'
+" git operation
+Plug 'tpope/vim-fugitive'
 
 call plug#end()
 
