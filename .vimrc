@@ -405,6 +405,9 @@ nnoremap <S-Down> <C-W><Down>
 nnoremap <S-Left> <C-W><Left>
 nnoremap <S-Right> <C-W><Right>
 
+" map Ctrl-] to Omni Complete
+inoremap <C-]> <C-X><C-O>
+
 " " NOTE: if we already map to EXbn,EXbp. skip setting this
 " " easy buffer navigation
 " if !hasmapto(':EXbn<CR>') && mapcheck('<C-l>','n') == ''
@@ -460,6 +463,7 @@ Plug 'tikhomirov/vim-glsl'
 " complete
 Plug 'exvim/ex-searchcompl'
 Plug 'exvim/ex-autocomplpop'
+Plug 'OmniSharp/omnisharp-vim'
 " TODO: Plug 'neoclide/coc.nvim'
 
 " file operation
@@ -569,6 +573,14 @@ hi ShowMarksHLl term=bold cterm=none ctermbg=lightblue gui=none guibg=SlateBlue
 " For marks A-Z
 hi clear ShowMarksHLu
 hi ShowMarksHLu term=bold cterm=bold ctermbg=lightred ctermfg=darkred gui=bold guibg=lightred guifg=darkred
+
+" omnisharp-vim
+" ---------------------------------------------------
+
+let g:OmniSharp_server_stdio = 1
+if WINDOWS()
+  let g:OmniSharp_server_path = 'C:\OmniSharp\omnisharp.win-x64\OmniSharp.exe'
+endif
 
 " ctrlp
 " ---------------------------------------------------
