@@ -1,18 +1,25 @@
+## vim-plug
+
+  - [vim-plug](https://github.com/junegunn/vim-plug)
+
 ## Global Search
 
   - [rg](https://github.com/BurntSushi/ripgrep)
-  - [ag](https://github.com/ggreer/the_silver_searcher)
+    - windows install: `choco install ripgrep`
+    - mac install: `brew install ripgrep`
 
 ## Fonts
 
-  - [top-programming-fonts](https://github.com/hbin/top-programming-fonts)
   - [powerline-fonts](https://github.com/powerline/fonts)
+  - [top-programming-fonts](https://github.com/hbin/top-programming-fonts)
 
 ## NeoVim
-  - [vimr](https://github.com/qvacua/vimr)
-    - `brew cask install vimr`
+
   - [nvim-qt](https://github.com/equalsraf/neovim-qt)
+    - windows install: `choco install neovim`
     - [See the windows installation guide of neovim](https://github.com/neovim/neovim/wiki/Installing-Neovim#windows)
+  - [vimr](https://github.com/qvacua/vimr)
+    - mac install `brew cask install vimr`
 
 ### NeoVim additional setup
 
