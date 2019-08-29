@@ -459,6 +459,7 @@ Plug 'exvim/ex-showmarks'
 " syntax highlight/check
 Plug 'scrooloose/syntastic'
 Plug 'tikhomirov/vim-glsl'
+Plug 'drichardson/vex.vim'
 
 " complete
 Plug 'exvim/ex-searchcompl'
