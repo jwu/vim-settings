@@ -4,6 +4,7 @@
 1. install `vim-plug`
 1. install `rg`
 1. install `fonts`
+1. install `omnisharp`
 
 ## vim-plug
 
@@ -14,6 +15,11 @@
 - [rg](https://github.com/BurntSushi/ripgrep)
   - windows install: `choco install ripgrep`
   - mac install: `brew install ripgrep`
+
+## OmniSharp
+
+- [omnisharp-roslyn](https://github.com/OmniSharp/omnisharp-roslyn)
+  - windows install: extract package in `c:\OmniSharp\omnisharp.win-x64\`
 
 ## Fonts
 
