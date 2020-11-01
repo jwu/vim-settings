@@ -227,7 +227,8 @@ set si " smartindent
 set backspace=indent,eol,start " allow backspacing over everything in insert mode
 " indent options
 " see help cinoptions-values for more details
-set	cinoptions=>s,e0,n0,f0,{0,}0,^0,:0,=s,l0,b0,g0,hs,ps,ts,is,+s,c3,C0,0,(0,us,U0,w0,W0,m0,j0,)20,*30
+" set cinoptions=>s,e0,n0,f0,{0,}0,^0,L-1,:s,=s,l0,b0,gs,hs,N0,E0,ps,ts,is,+s,c3,C0,/0,(2s,us,U0,w0,W0,k0,m0,j0,J0,)20,*70,#0
+set	cinoptions=>s,e0,n0,f0,{0,}0,^0,L0:0,=s,l0,b0,g0,hs,N0,E0,ps,ts,is,+s,c3,C0,/0,(0,us,U0,w0,Ws,m1,M0,j1,J1,)20,*70,#0
 " default '0{,0},0),:,0#,!^F,o,O,e' disable 0# for not ident preprocess
 " set cinkeys=0{,0},0),:,!^F,o,O,e
 
@@ -275,90 +276,6 @@ set smartcase " set smartcase mode on, If there is upper case character in the s
 " set this to use id-utils for global search
 set grepprg=lid\ -Rgrep\ -s
 set grepformat=%f:%l:%m
-
-"/////////////////////////////////////////////////////////////////////////////
-" Auto Command
-"/////////////////////////////////////////////////////////////////////////////
-
-" ------------------------------------------------------------------
-" Desc: Only do this part when compiled with support for autocommands.
-" ------------------------------------------------------------------
-
-if has('autocmd')
-  augroup ex
-    au!
-
-    " ------------------------------------------------------------------
-    " Desc: Buffer
-    " ------------------------------------------------------------------
-
-    " when editing a file, always jump to the last known cursor position.
-    " don't do it when the position is invalid or when inside an event handler
-    " (happens when dropping a file on gvim).
-    au BufReadPost *
-          \ if line("'\"") > 0 && line("'\"") <= line("$") |
-          \   exe "normal g`\"" |
-          \ endif
-    au BufNewFile,BufEnter * set cpoptions+=d " NOTE: ctags find the tags file from the current path instead of the path of currect file
-    au BufEnter * :syntax sync fromstart " ensure every file does syntax highlighting (full)
-    au BufNewFile,BufRead *.avs set syntax=avs " for avs syntax file.
-    au BufNewFile,BufRead *.{vs,fs,hlsl,fx,fxh,cg,cginc,vsh,psh,shd,glsl,shader} set ft=glsl
-    au BufNewFile,BufRead *.shader set ft=shader
-
-    " ------------------------------------------------------------------
-    " Desc: file types
-    " ------------------------------------------------------------------
-
-    au FileType text setlocal textwidth=78 " for all text files set 'textwidth' to 78 characters.
-    au FileType c,cpp,cs,swig set nomodeline " this will avoid bug in my project with namespace ex, the vim will tree ex:: as modeline.
-
-    " disable auto-comment for c/cpp, lua, javascript, c# and vim-script
-    au FileType c,cpp,java,javascript set comments=sO:*\ -,mO:*\ \ ,exO:*/,s1:/*,mb:*,ex:*/,f://
-    au FileType cs set comments=sO:*\ -,mO:*\ \ ,exO:*/,s1:/*,mb:*,ex:*/,f:///,f://
-    au FileType vim set comments=sO:\"\ -,mO:\"\ \ ,eO:\"\",f:\"
-    au FileType lua set comments=f:--
-
-    " if edit python scripts, check if have \t. (python said: the programme can only use \t or not, but can't use them together)
-    au FileType python,coffee call s:check_if_expand_tab()
-  augroup END
-
-  function! s:check_if_expand_tab()
-    let has_noexpandtab = search('^\t','wn')
-    let has_expandtab = search('^    ','wn')
-
-    if has_noexpandtab && has_expandtab
-      let idx = inputlist (['ERROR: current file exists both expand and noexpand TAB, python can only use one of these two mode in one file.\nSelect Tab Expand Type:',
-            \ '1. expand (tab=space, recommended)',
-            \ '2. noexpand (tab=\t, currently have risk)',
-            \ '3. do nothing (I will handle it by myself)'])
-      let tab_space = printf('%*s',&tabstop,'')
-      if idx == 1
-        let has_noexpandtab = 0
-        let has_expandtab = 1
-        silent exec '%s/\t/' . tab_space . '/g'
-      elseif idx == 2
-        let has_noexpandtab = 1
-        let has_expandtab = 0
-        silent exec '%s/' . tab_space . '/\t/g'
-      else
-        return
-      endif
-    endif
-
-    if has_noexpandtab == 1 && has_expandtab == 0
-      echomsg 'substitute space to TAB...'
-      set noexpandtab
-      echomsg 'done!'
-    elseif has_noexpandtab == 0 && has_expandtab == 1
-      echomsg 'substitute TAB to space...'
-      set expandtab
-      echomsg 'done!'
-    else
-      " it may be a new file
-      " we use original vim setting
-    endif
-  endfunction
-endif
 
 "/////////////////////////////////////////////////////////////////////////////
 " Key Mappings
@@ -482,6 +399,98 @@ Plug 'ntpeters/vim-better-whitespace'
 Plug 'tpope/vim-fugitive'
 
 call plug#end()
+
+" NOTE: au must after filetype plug, otherwise they won't work
+"/////////////////////////////////////////////////////////////////////////////
+" Auto Command
+"/////////////////////////////////////////////////////////////////////////////
+
+" ------------------------------------------------------------------
+" Desc: Only do this part when compiled with support for autocommands.
+" ------------------------------------------------------------------
+
+if has('autocmd')
+  augroup ex
+    au!
+
+    " ------------------------------------------------------------------
+    " Desc: Buffer
+    " ------------------------------------------------------------------
+
+    " when editing a file, always jump to the last known cursor position.
+    " don't do it when the position is invalid or when inside an event handler
+    " (happens when dropping a file on gvim).
+    au BufReadPost *
+          \ if line("'\"") > 0 && line("'\"") <= line("$") |
+          \   exe "normal g`\"" |
+          \ endif
+    au BufNewFile,BufEnter * set cpoptions+=d " NOTE: ctags find the tags file from the current path instead of the path of currect file
+    au BufEnter * :syntax sync fromstart " ensure every file does syntax highlighting (full)
+    au BufNewFile,BufRead *.avs set syntax=avs " for avs syntax file.
+    au BufNewFile,BufRead *.{vs,fs,hlsl,fx,fxh,cg,cginc,vsh,psh,shd,glsl,shader} set ft=glsl
+    au BufNewFile,BufRead *.shader set ft=shader
+
+    " ------------------------------------------------------------------
+    " Desc: file types
+    " ------------------------------------------------------------------
+
+    au FileType text setlocal textwidth=78 " for all text files set 'textwidth' to 78 characters.
+    au FileType c,cpp,cs,swig set nomodeline " this will avoid bug in my project with namespace ex, the vim will tree ex:: as modeline.
+
+    " disable auto-comment for c/cpp, lua, javascript, c# and vim-script
+    au FileType c,cpp,java,javascript set comments=sO:*\ -,mO:*\ \ ,exO:*/,s1:/*,mb:*,ex:*/,f://
+    au FileType cs set comments=sO:*\ -,mO:*\ \ ,exO:*/,s1:/*,mb:*,ex:*/,f:///,f://
+    au FileType vim set comments=sO:\"\ -,mO:\"\ \ ,eO:\"\",f:\"
+    au FileType lua set comments=f:--
+
+    " disable automaticaly insert current comment leader after hitting <Enter>, 'o' or 'O'
+    au FileType c,cpp,cs set formatoptions-=ro
+
+    " if edit python scripts, check if have \t. (python said: the programme can only use \t or not, but can't use them together)
+    au FileType python,coffee call s:check_if_expand_tab()
+  augroup END
+
+  function! s:check_if_expand_tab()
+    let has_noexpandtab = search('^\t','wn')
+    let has_expandtab = search('^    ','wn')
+
+    if has_noexpandtab && has_expandtab
+      let idx = inputlist (['ERROR: current file exists both expand and noexpand TAB, python can only use one of these two mode in one file.\nSelect Tab Expand Type:',
+            \ '1. expand (tab=space, recommended)',
+            \ '2. noexpand (tab=\t, currently have risk)',
+            \ '3. do nothing (I will handle it by myself)'])
+      let tab_space = printf('%*s',&tabstop,'')
+      if idx == 1
+        let has_noexpandtab = 0
+        let has_expandtab = 1
+        silent exec '%s/\t/' . tab_space . '/g'
+      elseif idx == 2
+        let has_noexpandtab = 1
+        let has_expandtab = 0
+        silent exec '%s/' . tab_space . '/\t/g'
+      else
+        return
+      endif
+    endif
+
+    if has_noexpandtab == 1 && has_expandtab == 0
+      echomsg 'substitute space to TAB...'
+      set noexpandtab
+      echomsg 'done!'
+    elseif has_noexpandtab == 0 && has_expandtab == 1
+      echomsg 'substitute TAB to space...'
+      set expandtab
+      echomsg 'done!'
+    else
+      " it may be a new file
+      " we use original vim setting
+    endif
+  endfunction
+endif
+
+"/////////////////////////////////////////////////////////////////////////////
+" vim-plug setup
+"/////////////////////////////////////////////////////////////////////////////
 
 " exvim-lite
 " ---------------------------------------------------
