@@ -166,10 +166,13 @@ if has('gui_running')
     elseif WINDOWS()
       if getfontname('DejaVu Sans Mono for Powerline') != ''
         set guifont=DejaVu\ Sans\ Mono\ for\ Powerline:h11
+        set guifontwide=Microsoft\ YaHei\ Mono:h11
       elseif getfontname('DejaVu Sans Mono') != ''
         set guifont=DejaVu\ Sans\ Mono:h11
+        set guifontwide=Microsoft\ YaHei\ Mono:h11
       elseif getfontname('Consolas') != ''
         set guifont=Consolas:h11
+        set guifontwide=Microsoft\ YaHei\ Mono:h11
       else
         set guifont=Lucida_Console:h11
       endif
