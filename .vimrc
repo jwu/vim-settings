@@ -543,7 +543,7 @@ endif
 
 " NOTE: When you open lots of buffers and typing text, it is so slow.
 " let g:airline_section_warning = ''
-let g:airline#extensions#tabline#enabled = 1
+let g:airline#extensions#tabline#enabled = 0
 let g:airline#extensions#tabline#show_buffers = 1
 let g:airline#extensions#tabline#buffer_nr_show = 1
 let g:airline#extensions#tabline#fnamemod = ':t'
