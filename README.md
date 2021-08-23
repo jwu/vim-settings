@@ -21,6 +21,11 @@
 - [omnisharp-roslyn](https://github.com/OmniSharp/omnisharp-roslyn)
   - windows install: extract package in `c:\OmniSharp\omnisharp.win-x64\`
 
+## jq
+
+- [jq](https://github.com/OmniSharp/omnisharp-roslyn)
+  - windows install: `choco install jq`
+
 ## Fonts
 
 - [powerline-fonts](https://github.com/powerline/fonts)
