@@ -23,7 +23,7 @@
 
 ## jq
 
-- [jq](https://github.com/OmniSharp/omnisharp-roslyn)
+- [jq](https://github.com/stedolan/jq)
   - windows install: `choco install jq`
 
 ## Fonts
