@@ -380,6 +380,8 @@ Plug 'exvim/ex-showmarks'
 Plug 'scrooloose/syntastic'
 Plug 'tikhomirov/vim-glsl'
 Plug 'drichardson/vex.vim'
+Plug 'rust-lang/rust.vim'
+Plug 'cespare/vim-toml'
 
 " complete
 Plug 'exvim/ex-searchcompl'
