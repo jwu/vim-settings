@@ -557,7 +557,7 @@ let g:airline#extensions#tabline#fnamemod = ':t'
 " hi EX_HL_cursorhl gui=none guibg=white term=none cterm=none ctermbg=white
 
 hi clear EX_HL_label1
-hi EX_HL_label1 gui=none guibg=darkcyan term=none cterm=none ctermbg=darkcyan
+hi EX_HL_label1 gui=none guibg=darkred term=none cterm=none ctermbg=darkcyan
 
 hi clear EX_HL_label2
 hi EX_HL_label2 gui=none guibg=darkmagenta term=none cterm=none ctermbg=darkmagenta
