@@ -596,6 +596,9 @@ let g:OmniSharp_server_stdio = 1
 if WINDOWS()
   let g:OmniSharp_server_path = 'C:\OmniSharp\omnisharp.win-x64\OmniSharp.exe'
 endif
+let g:OmniSharp_highlight_groups = {
+\ 'ExcludedCode': 'Normal'
+\}
 
 " ctrlp
 " ---------------------------------------------------
