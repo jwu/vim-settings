@@ -62,6 +62,8 @@ if WINDOWS()
     set fileencodings=ucs-bom,utf-8,utf-16le,cp1252,iso-8859-15
   endif
 
+  " use directx rendering font in Windows for better text
+  set renderoptions=type:directx
 else
   " set default encoding to utf-8
   set encoding=utf-8
