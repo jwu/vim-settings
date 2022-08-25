@@ -8,15 +8,15 @@ if has('nvim')
   set termguicolors
 endif
 
-function! OSX()
+function! g:OSX()
   return has('macunix')
 endfunction
 
-function! LINUX()
+function! g:LINUX()
   return has('unix') && !has('macunix') && !has('win32unix')
 endfunction
 
-function! WINDOWS()
+function! g:WINDOWS()
   return (has('win16') || has('win32') || has('win64'))
 endfunction
 
