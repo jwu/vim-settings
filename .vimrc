@@ -10,11 +10,11 @@ if has('nvim')
   set termguicolors
 endif
 
-def OSX(): bool
+def g:OSX(): bool
   return has('macunix')
 enddef
 
-def LINUX(): bool
+def g:LINUX(): bool
   var unix = has('unix')
   var macunix = has('macunix')
   var win32unix = has('win32unix')
@@ -22,7 +22,7 @@ def LINUX(): bool
   return unix && !macunix && !win32unix
 enddef
 
-def WINDOWS(): bool
+def g:WINDOWS(): bool
   var win16 = has('win16')
   var win32 = has('win32')
   var win64 = has('win64')
@@ -39,9 +39,9 @@ enddef
 set langmenu=none
 
 # use English for anaything in vim-editor.
-if WINDOWS()
+if g:WINDOWS()
   silent exec 'language english'
-elseif OSX()
+elseif g:OSX()
   silent exec 'language en_US'
 else
   var uname = system("uname -s")
@@ -55,7 +55,7 @@ else
 endif
 
 # try to set encoding to utf-8
-if WINDOWS()
+if g:WINDOWS()
   # Be nice and check for multi_byte even if the config requires
   # multi_byte support most of the time
   if has('multi_byte')
@@ -167,13 +167,13 @@ if has('gui_running')
     elseif has('x11')
       # Also for GTK 1
       set guifont=*-lucidatypewriter-medium-r-normal-*-*-180-*-*-m-*-*
-    elseif OSX()
+    elseif g:OSX()
       if getfontname('DejaVu Sans Mono for Powerline') != ''
         set guifont=DejaVu\ Sans\ Mono\ for\ Powerline:h13
       elseif getfontname('DejaVu Sans Mono') != ''
         set guifont=DejaVu\ Sans\ Mono:h13
       endif
-    elseif WINDOWS()
+    elseif g:WINDOWS()
       if getfontname('DejaVu Sans Mono for Powerline') != ''
         set guifont=DejaVu\ Sans\ Mono\ for\ Powerline:h11
         set guifontwide=Microsoft\ YaHei\ Mono:h11
@@ -217,7 +217,7 @@ if has('gui_running')
   endif
 
   # DISABLE
-  # if WINDOWS()
+  # if g:WINDOWS()
   #     au GUIEnter * simalt ~x # Maximize window when enter vim
   # else
   #     # TODO: no way right now
@@ -435,7 +435,7 @@ if has('autocmd')
     # when editing a file, always jump to the last known cursor position.
     # don't do it when the position is invalid or when inside an event handler
     # (happens when dropping a file on gvim).
-    au BufReadPost * \
+    au BufReadPost *
           \ if line("'\"") > 0 && line("'\"") <= line("$") |
           \ exe "normal g`\"" |
           \ endif
@@ -605,7 +605,7 @@ hi ShowMarksHLu term=bold cterm=bold ctermbg=lightred ctermfg=darkred gui=bold g
 # ---------------------------------------------------
 
 g:OmniSharp_server_stdio = 1
-if WINDOWS()
+if g:WINDOWS()
   g:OmniSharp_server_path = 'C:\OmniSharp\omnisharp.win-x64\OmniSharp.exe'
 endif
 g:OmniSharp_highlight_groups = {
@@ -645,8 +645,8 @@ xmap s <Plug>VSurround
 # tabular
 # ---------------------------------------------------
 
-nnoremap <silent> <leader>= :g:Tabular(1)<CR>
-xnoremap <silent> <leader>= :g:Tabular(0)<CR>
+nnoremap <silent> <leader>= <ScriptCmd>g:Tabular(1)<CR>
+xnoremap <silent> <leader>= <ScriptCmd>g:Tabular(0)<CR>
 def! g:Tabular(ignore_range: number)
   var c = getchar()
   c = nr2char(c)
