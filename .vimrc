@@ -388,7 +388,11 @@ Plug 'cespare/vim-toml'
 " complete
 Plug 'exvim/ex-searchcompl'
 Plug 'exvim/ex-autocomplpop'
+
+" lsp
 Plug 'OmniSharp/omnisharp-vim'
+" TODO: Plug 'prabirshrestha/vim-lsp'
+" TODO: Plug 'mattn/vim-lsp-settings'
 " TODO: Plug 'neoclide/coc.nvim'
 
 " file operation
