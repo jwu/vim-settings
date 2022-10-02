@@ -455,7 +455,7 @@ if has('autocmd')
     au FileType lua set comments=f:--
 
     " disable automaticaly insert current comment leader after hitting <Enter>, 'o' or 'O'
-    au FileType c,cpp,cs set formatoptions-=ro
+    au FileType c,cpp,cs,rust set formatoptions-=ro
 
     " if edit python scripts, check if have \t. (python said: the programme can only use \t or not, but can't use them together)
     au FileType python,coffee call s:check_if_expand_tab()
