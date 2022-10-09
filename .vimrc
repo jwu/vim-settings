@@ -327,8 +327,8 @@ nnoremap <S-Down> <C-W><Down>
 nnoremap <S-Left> <C-W><Left>
 nnoremap <S-Right> <C-W><Right>
 
-" map Ctrl-] to Omni Complete
-inoremap <C-]> <C-X><C-O>
+" map Ctrl-Space to Omni Complete
+inoremap <C-Space> <C-X><C-O>
 
 " " NOTE: if we already map to EXbn,EXbp. skip setting this
 " " easy buffer navigation
@@ -390,6 +390,7 @@ Plug 'exvim/ex-searchcompl'
 Plug 'exvim/ex-autocomplpop'
 
 " lsp
+Plug 'dense-analysis/ale'
 Plug 'OmniSharp/omnisharp-vim'
 " TODO: Plug 'prabirshrestha/vim-lsp'
 " TODO: Plug 'mattn/vim-lsp-settings'
@@ -603,8 +604,35 @@ if WINDOWS()
   let g:OmniSharp_server_path = 'C:\OmniSharp\omnisharp.win-x64\OmniSharp.exe'
 endif
 let g:OmniSharp_highlight_groups = {
-\ 'ExcludedCode': 'Normal'
-\}
+      \ 'ExcludedCode': 'Normal'
+      \}
+
+" ale
+" ---------------------------------------------------
+
+let g:ale_completion_enabled = 0
+nnoremap <leader>] :ALEGoToDefinition<CR>
+let g:ale_linters = {
+      \  'cs': ['OmniSharp'],
+      \  'rust': ['analyzer']
+      \}
+let g:ale_fixers = {
+      \  '*': ['trim_whitespace', 'remove_trailing_lines'],
+      \  'rust': ['rustfmt']
+      \}
+set omnifunc=ale#completion#OmniFunc
+set completeopt=menu,menuone,popup,noselect,noinsert
+" NOTE: we use :RustFmt, :ALEFix or \w manually instead
+" let g:ale_fix_on_save = 1
+nnoremap <unique> <leader>w :ALEFix<CR>
+
+" rust.vim
+" ---------------------------------------------------
+
+" NOTE: we use ale & rust-analyzer instead
+let g:rustfmt_autosave = 0
+let g:rustfmt_autosave_if_config_present = 0
+let g:syntastic_rust_checkers = []
 
 " ctrlp
 " ---------------------------------------------------
@@ -655,6 +683,7 @@ endfunction
 " ---------------------------------------------------
 
 let g:better_whitespace_guicolor = 'darkred'
-nnoremap <unique> <leader>w :StripWhitespace<CR>
+" NOTE: we use :ALEFix instead
+" nnoremap <unique> <leader>w :StripWhitespace<CR>
 
 " vim:ts=2:sw=2:sts=2 et fdm=marker:
