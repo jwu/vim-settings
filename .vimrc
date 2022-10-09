@@ -372,7 +372,8 @@ Plug 'jwu/exvim-lite'
 Plug 'rakr/vim-one'
 
 " visual enhancement
-Plug 'vim-airline/vim-airline'
+" Plug 'vim-airline/vim-airline'
+Plug 'itchyny/lightline.vim'
 
 " text highlight
 Plug 'exvim/ex-easyhl'
@@ -392,9 +393,6 @@ Plug 'exvim/ex-autocomplpop'
 " lsp
 Plug 'dense-analysis/ale'
 Plug 'OmniSharp/omnisharp-vim'
-" TODO: Plug 'prabirshrestha/vim-lsp'
-" TODO: Plug 'mattn/vim-lsp-settings'
-" TODO: Plug 'neoclide/coc.nvim'
 
 " file operation
 Plug 'kien/ctrlp.vim'
@@ -540,22 +538,87 @@ nnoremap <unique> <leader>fc :call <SID>find_file()<CR>
 colorscheme one
 set background=dark
 
-" vim-airline
+"DISABLE: use lightline instead
+"" vim-airline
+"" ---------------------------------------------------
+"
+"let g:airline_theme='one'
+"if has('gui_running') || has('nvim')
+"  let g:airline_powerline_fonts = 1
+"else
+"  let g:airline_powerline_fonts = 0
+"endif
+"
+"" NOTE: When you open lots of buffers and typing text, it is so slow.
+"" let g:airline_section_warning = ''
+"let g:airline#extensions#tabline#enabled = 0
+"let g:airline#extensions#tabline#show_buffers = 1
+"let g:airline#extensions#tabline#buffer_nr_show = 1
+"let g:airline#extensions#tabline#fnamemod = ':t'
+"
+"" show ale errors or warnings in statusline
+"let g:airline#extensions#ale#enabled = 1
+
+" lightline
 " ---------------------------------------------------
 
-let g:airline_theme='one'
-if has('gui_running') || has('nvim')
-  let g:airline_powerline_fonts = 1
-else
-  let g:airline_powerline_fonts = 0
-endif
+let g:lightline = {
+      \   'colorscheme': 'one',
+      \   'active': {
+      \     'left': [
+      \       ['mode', 'paste'],
+      \       ['gitbranch'],
+      \       ['fmod'],
+      \     ],
+      \     'right': [
+      \       ['lineinfo'],
+      \       ['fileinfo'],
+      \       ['filetype'],
+      \     ],
+      \   },
+      \   'inactive': {
+      \     'left': [
+      \       ['fmod'],
+      \     ],
+      \     'right': [
+      \       ['lineinfo'],
+      \       ['fileinfo'],
+      \       ['filetype'],
+      \     ],
+      \   },
+      \   'component': {
+      \     'lineinfo': '%p%% :%l/%v',
+      \     'fileinfo': '%{&fenc!=#""?&fenc:&enc}[%{&ff}]',
+      \   },
+      \   'component_function': {
+      \     'gitbranch': 'FugitiveHead',
+      \     'fmod': 'LightlineFmod',
+      \   },
+      \}
+let g:lightline.separator = {
+      \   'left': '', 'right': ''
+      \}
+let g:lightline.subseparator = {
+      \   'left': '', 'right': ''
+      \}
 
-" NOTE: When you open lots of buffers and typing text, it is so slow.
-" let g:airline_section_warning = ''
-let g:airline#extensions#tabline#enabled = 0
-let g:airline#extensions#tabline#show_buffers = 1
-let g:airline#extensions#tabline#buffer_nr_show = 1
-let g:airline#extensions#tabline#fnamemod = ':t'
+function! LightlineFmod()
+  " if &modified
+  "   exe printf('hi link ModifiedColor Statement')
+  " else
+  "   exe printf('hi link ModifiedColor NonText')
+  " endif
+  let fname = fnamemodify(expand('%'), ':p:.:gs?\\?/?')
+  let mod = &modified ? ' [+]' : ''
+  let ro = &readonly ? ' [RO]' : ''
+
+  return fname .. mod .. ro
+endfunction
+
+" TODO:
+" function! LightlineFileformat()
+"   return winwidth(0) > 70 ? &fileformat : ''
+" endfunction
 
 " ex-easyhl
 " ---------------------------------------------------
@@ -611,7 +674,7 @@ let g:OmniSharp_highlight_groups = {
 " ---------------------------------------------------
 
 let g:ale_completion_enabled = 0
-nnoremap <leader>] :ALEGoToDefinition<CR>
+let g:ale_linters_explicit = 1 " Only run linters named in ale_linters settings.
 let g:ale_linters = {
       \  'cs': ['OmniSharp'],
       \  'rust': ['analyzer']
@@ -620,6 +683,13 @@ let g:ale_fixers = {
       \  '*': ['trim_whitespace', 'remove_trailing_lines'],
       \  'rust': ['rustfmt']
       \}
+let g:ale_rust_analyzer_config = {
+      \   'diagnostics': {
+      \     'disabled': ['inactive-code']
+      \   }
+      \}
+
+nnoremap <leader>] :ALEGoToDefinition<CR>
 set omnifunc=ale#completion#OmniFunc
 set completeopt=menu,menuone,popup,noselect,noinsert
 " NOTE: we use :RustFmt, :ALEFix or \w manually instead
