@@ -13,13 +13,19 @@
 ## Global Search
 
 - [rg](https://github.com/BurntSushi/ripgrep)
-  - windows install: `choco install ripgrep`
-  - mac install: `brew install ripgrep`
+  - Windows install: `choco install ripgrep`
+  - Mac install: `brew install ripgrep`
 
 ## OmniSharp
 
 - [omnisharp-roslyn](https://github.com/OmniSharp/omnisharp-roslyn)
-  - windows install: extract package in `c:\OmniSharp\omnisharp.win-x64\`
+  - Windows install: extract package in `c:\bin\omnisharp.win-x64\`
+
+## rust-analyzer
+
+- [rust-analyzer](https://github.com/rust-lang/rust-analyzer/releases)
+  - Windows install: extract package in `c:\bin\`
+  - add `c:\bin\` to Environment Path
 
 ## jq
 
@@ -35,7 +41,7 @@
 ## NeoVim
 
 - [nvim-qt](https://github.com/equalsraf/neovim-qt)
-  - windows install: `choco install neovim`
+  - Windows install: `choco install neovim`
   - [See the windows installation guide of neovim](https://github.com/neovim/neovim/wiki/Installing-Neovim#windows)
 - [vimr](https://github.com/qvacua/vimr)
   - mac install `brew cask install vimr`

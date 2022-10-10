@@ -664,7 +664,7 @@ hi ShowMarksHLu term=bold cterm=bold ctermbg=lightred ctermfg=darkred gui=bold g
 
 let g:OmniSharp_server_stdio = 1
 if WINDOWS()
-  let g:OmniSharp_server_path = 'C:\OmniSharp\omnisharp.win-x64\OmniSharp.exe'
+  let g:OmniSharp_server_path = 'c:\bin\omnisharp.win-x64\OmniSharp.exe'
 endif
 let g:OmniSharp_highlight_groups = {
       \ 'ExcludedCode': 'Normal'
