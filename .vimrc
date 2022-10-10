@@ -591,7 +591,7 @@ let g:lightline = {
       \     'fileinfo': '%{&fenc!=#""?&fenc:&enc}[%{&ff}]',
       \   },
       \   'component_function': {
-      \     'gitbranch': 'FugitiveHead',
+      \     'gitbranch': 'LightlineBranch',
       \     'fmod': 'LightlineFmod',
       \   },
       \}
@@ -601,6 +601,10 @@ let g:lightline.separator = {
 let g:lightline.subseparator = {
       \   'left': '', 'right': ''
       \}
+
+function! LightlineBranch()
+  return ' ' .. FugitiveHead()
+endfunction
 
 function! LightlineFmod()
   " if &modified
