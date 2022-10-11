@@ -677,6 +677,8 @@ let g:OmniSharp_highlight_groups = {
 " ale
 " ---------------------------------------------------
 
+let g:ale_hover_cursor = 0 " disable hover cursor
+let g:ale_set_balloons = 0 " enable hover mouse
 let g:ale_completion_enabled = 0
 let g:ale_linters_explicit = 1 " Only run linters named in ale_linters settings.
 let g:ale_linters = {
@@ -693,9 +695,10 @@ let g:ale_rust_analyzer_config = {
       \   }
       \}
 
-nnoremap <leader>] :ALEGoToDefinition<CR>
 set omnifunc=ale#completion#OmniFunc
 set completeopt=menu,menuone,popup,noselect,noinsert
+nnoremap <leader>] :ALEGoToDefinition<CR>
+nnoremap <leader>[ :ALEHover<CR>
 " NOTE: we use :RustFmt, :ALEFix or \w manually instead
 " let g:ale_fix_on_save = 1
 nnoremap <unique> <leader>w :ALEFix<CR>
