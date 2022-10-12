@@ -678,7 +678,11 @@ let g:OmniSharp_highlight_groups = {
 " ---------------------------------------------------
 
 let g:ale_hover_cursor = 0 " disable hover cursor
-let g:ale_set_balloons = 0 " enable hover mouse
+let g:ale_hover_to_preview = 0 " disable hover preview window
+let g:ale_set_balloons = 0 " disable hover mouse
+let g:ale_floating_preview = 1 " NOTE: Vim 8+, long messages will be shown in a preview window, so we use this instead
+let g:ale_floating_window_border = ['│', '─', '╭', '╮', '╯', '╰', '│', '─']
+
 let g:ale_completion_enabled = 0
 let g:ale_linters_explicit = 1 " Only run linters named in ale_linters settings.
 let g:ale_linters = {
