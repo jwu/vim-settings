@@ -26,6 +26,8 @@
 - [rust-analyzer](https://github.com/rust-lang/rust-analyzer/releases)
   - Windows install: extract package in `c:\bin\`
   - add `c:\bin\` to Environment Path
+  - Mac install: extract package in `/usr/local/bin/`
+  - `chmod +x /usr/local/bin/rust-analyzer`
 
 ## jq
 
@@ -44,7 +46,7 @@
   - Windows install: `choco install neovim`
   - [See the windows installation guide of neovim](https://github.com/neovim/neovim/wiki/Installing-Neovim#windows)
 - [vimr](https://github.com/qvacua/vimr)
-  - mac install `brew cask install vimr`
+  - Mac install `brew cask install vimr`
 
 ### NeoVim additional setup
 
