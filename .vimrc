@@ -218,10 +218,11 @@ endif
 
 set showfulltag " show tag with function protype.
 
-" disable menu & toolbar, add bottom scrollbar
-set guioptions-=m " disable Menu
-set guioptions-=T " disalbe Toolbar
-set guioptions+=b " present the bottom scrollbar when the longest visible line exceed the window
+" disable menu, toolbar and scrollbar
+set guioptions= " remove all guioptions
+" set guioptions-=m " disable Menu
+" set guioptions-=T " disalbe Toolbar
+" set guioptions-=b " present the bottom scrollbar when the longest visible line exceed the window
 
 " ------------------------------------------------------------------
 " Desc: Text edit
