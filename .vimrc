@@ -604,6 +604,10 @@ let g:lightline.subseparator = {
       \}
 
 function! LightlineBranch()
+  if &buftype == 'nofile'
+    return ''
+  endif
+
   return ' ' .. FugitiveHead()
 endfunction
 
