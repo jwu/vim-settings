@@ -588,7 +588,7 @@ let g:lightline = {
       \     ],
       \   },
       \   'component': {
-      \     'lineinfo': '%p%% :%l/%v',
+      \     'lineinfo': " %p%% %l/%v %{line('$')}",
       \     'fileinfo': '%{&fenc!=#""?&fenc:&enc}[%{&ff}]',
       \   },
       \   'component_function': {
