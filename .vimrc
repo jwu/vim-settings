@@ -515,6 +515,12 @@ function s:find_file()
   exec 'EXProjectFind'
 endfunction
 
+function s:fmt_file()
+  exec 'StripWhitespace'
+  exec 'ALEFix'
+  echomsg 'file formatted!'
+endfunction
+
 " buffer operation
 nnoremap <unique> <silent> <Leader>bd :EXbd<CR>
 nnoremap <unique> <silent> <C-l> :EXbn<CR>
@@ -532,6 +538,9 @@ nnoremap <unique> <leader>gs :call ex#search#toggle_window()<CR>
 
 " project
 nnoremap <unique> <leader>fc :call <SID>find_file()<CR>
+
+" format
+nnoremap <unique> <silent> <leader>w :call <SID>fmt_file()<CR>
 
 " vim-one
 " ---------------------------------------------------
@@ -695,7 +704,6 @@ let g:ale_linters = {
       \  'rust': ['analyzer']
       \}
 let g:ale_fixers = {
-      \  '*': ['trim_whitespace', 'remove_trailing_lines'],
       \  'rust': ['rustfmt']
       \}
 let g:ale_rust_analyzer_config = {
@@ -708,9 +716,8 @@ set omnifunc=ale#completion#OmniFunc
 set completeopt=menu,menuone,popup,noselect,noinsert
 nnoremap <leader>] :ALEGoToDefinition<CR>
 nnoremap <leader>[ :ALEHover<CR>
-" NOTE: we use :RustFmt, :ALEFix or \w manually instead
-" let g:ale_fix_on_save = 1
-nnoremap <unique> <leader>w :ALEFix<CR>
+" NOTE: we do this in s:fmt_file()
+" nnoremap <unique> <leader>w :ALEFix<CR>
 
 " rust.vim
 " ---------------------------------------------------
@@ -769,7 +776,7 @@ endfunction
 " ---------------------------------------------------
 
 let g:better_whitespace_guicolor = 'darkred'
-" NOTE: we use :ALEFix instead
+" NOTE: we do this in s:fmt_file()
 " nnoremap <unique> <leader>w :StripWhitespace<CR>
 
 " vim:ts=2:sw=2:sts=2 et fdm=marker:
