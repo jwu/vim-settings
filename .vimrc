@@ -404,7 +404,7 @@ Plug 'tpope/vim-commentary'
 Plug 'tpope/vim-surround'
 Plug 'vim-scripts/VisIncr'
 Plug 'godlygeek/tabular'
-Plug 'ntpeters/vim-better-whitespace'
+Plug 'jwu/vim-better-whitespace'
 
 " git operation
 Plug 'tpope/vim-fugitive'
