@@ -314,13 +314,11 @@ nnoremap <silent> <leader>y2 :let @*=fnamemodify(bufname('%'),":p:t")<CR>
 nnoremap <silent> <leader>y3 :let @*=fnamemodify(bufname('%'),":p")<CR>
 
 " F8 or <leader>/:  Set Search pattern highlight on/off
-nnoremap <F8> :let @/=""<CR>
-nnoremap <leader>/ :let @/=""<CR>
+nnoremap <leader>\ :let @/=""<CR>
 " DISABLE: though nohlsearch is standard way in Vim, but it will not erase the
 "          search pattern, which is not so good when use it with exVim's <leader>r
 "          filter method
-" nnoremap <F8> :nohlsearch<CR>
-" nnoremap <leader>/ :nohlsearch<CR>
+" nnoremap <leader>\ :nohlsearch<CR>
 
 " map Ctrl-Tab to switch window
 nnoremap <S-Up> <C-W><Up>
@@ -682,7 +680,7 @@ hi ShowMarksHLu term=bold cterm=bold ctermbg=lightred ctermfg=darkred gui=bold g
 
 let g:OmniSharp_server_stdio = 1
 if WINDOWS()
-  let g:OmniSharp_server_path = 'c:\bin\omnisharp.win-x64\OmniSharp.exe'
+  let g:OmniSharp_server_path = 'd:\utils\omnisharp.win-x64\OmniSharp.exe'
 endif
 let g:OmniSharp_highlight_groups = {
       \ 'ExcludedCode': 'Normal'
