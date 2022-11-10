@@ -515,7 +515,8 @@ endfunction
 
 function s:fmt_file()
   exec 'StripWhitespace'
-  exec 'ALEFix'
+  " use this than exec 'ALEFix' to prevent 'no fixer found error'
+  silent call ale#fix#Fix(bufnr(''), '!')
   echomsg 'file formatted!'
 endfunction
 
