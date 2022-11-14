@@ -376,7 +376,6 @@ Plug 'jwu/exvim-lite'
 
 " color theme
 Plug 'rakr/vim-one'
-Plug 'dracula/vim', { 'as': 'dracula' }
 
 " visual enhancement
 " Plug 'vim-airline/vim-airline'
@@ -553,7 +552,6 @@ nnoremap <unique> <silent> <leader>w :call <SID>fmt_file()<CR>
 " ---------------------------------------------------
 
 colorscheme one
-" colorscheme dracula
 set background=dark
 
 "DISABLE: use lightline instead
