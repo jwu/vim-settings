@@ -149,7 +149,9 @@ if has('gui_running')
   " set guifont
   function! s:set_gui_font()
     if has('gui_gtk2')
-      if getfontname('DejaVu Sans Mono for Powerline') != ''
+      if getfontname('FuraMono Nerd Font') != ''
+        set guifont=FuraMono\ Nerd\ Font\ 12
+      elseif getfontname('DejaVu Sans Mono for Powerline') != ''
         set guifont=DejaVu\ Sans\ Mono\ for\ Powerline\ 12
       elseif getfontname('DejaVu Sans Mono') != ''
         set guifont=DejaVu\ Sans\ Mono\ 12
@@ -160,13 +162,18 @@ if has('gui_running')
       " Also for GTK 1
       set guifont=*-lucidatypewriter-medium-r-normal-*-*-180-*-*-m-*-*
     elseif OSX()
-      if getfontname('DejaVu Sans Mono for Powerline') != ''
+      if getfontname('FuraMono Nerd Font') != ''
+        set guifont=FuraMono\ Nerd\ Font:h13
+      elseif getfontname('DejaVu Sans Mono for Powerline') != ''
         set guifont=DejaVu\ Sans\ Mono\ for\ Powerline:h13
       elseif getfontname('DejaVu Sans Mono') != ''
         set guifont=DejaVu\ Sans\ Mono:h13
       endif
     elseif WINDOWS()
-      if getfontname('DejaVu Sans Mono for Powerline') != ''
+      if getfontname('FuraMono Nerd Font') != ''
+        set guifont=FuraMono\ Nerd\ Font:h11
+        set guifontwide=Microsoft\ YaHei\ Mono:h11
+      elseif getfontname('DejaVu Sans Mono for Powerline') != ''
         set guifont=DejaVu\ Sans\ Mono\ for\ Powerline:h11
         set guifontwide=Microsoft\ YaHei\ Mono:h11
       elseif getfontname('DejaVu Sans Mono') != ''
@@ -369,6 +376,7 @@ Plug 'jwu/exvim-lite'
 
 " color theme
 Plug 'rakr/vim-one'
+Plug 'dracula/vim', { 'as': 'dracula' }
 
 " visual enhancement
 " Plug 'vim-airline/vim-airline'
@@ -545,6 +553,7 @@ nnoremap <unique> <silent> <leader>w :call <SID>fmt_file()<CR>
 " ---------------------------------------------------
 
 colorscheme one
+" colorscheme dracula
 set background=dark
 
 "DISABLE: use lightline instead

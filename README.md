@@ -36,6 +36,7 @@
 
 ## Fonts
 
+- [nerdfonts](https://www.nerdfonts.com/)
 - [powerline-fonts](https://github.com/powerline/fonts)
 - [top-programming-fonts](https://github.com/hbin/top-programming-fonts)
 - [Microsoft-Yahei-Mono.ttf](https://github.com/whorusq/sublime-text-3/blob/master/fonts/Microsoft-Yahei-Mono.ttf)
