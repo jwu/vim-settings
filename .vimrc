@@ -226,10 +226,12 @@ endif
 set showfulltag " show tag with function protype.
 
 " disable menu, toolbar and scrollbar
-set guioptions= " remove all guioptions
-" set guioptions-=m " disable Menu
-" set guioptions-=T " disalbe Toolbar
-" set guioptions-=b " present the bottom scrollbar when the longest visible line exceed the window
+" set guioptions= " remove all guioptions
+set guioptions-=m " disable Menu
+set guioptions-=T " disalbe Toolbar
+set guioptions-=b " disalbe the bottom scrollbar
+set guioptions-=l " disalbe the left scrollbar
+set guioptions-=L " disalbe the left scrollbar when the longest visible line exceed the window
 
 " ------------------------------------------------------------------
 " Desc: Text edit
@@ -398,7 +400,7 @@ Plug 'exvim/ex-autocomplpop'
 
 " lsp
 Plug 'dense-analysis/ale'
-Plug 'OmniSharp/omnisharp-vim'
+Plug 'jwu/omnisharp-vim'
 
 " file operation
 Plug 'kien/ctrlp.vim'
