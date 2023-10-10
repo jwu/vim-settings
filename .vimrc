@@ -8,6 +8,15 @@ if has('nvim')
   set termguicolors
 endif
 
+if exists("g:neovide")
+  let g:neovide_scroll_animation_length = 0.3
+  let g:neovide_hide_mouse_when_typing = v:true
+  let g:neovide_refresh_rate = 60
+  let g:neovide_refresh_rate_idle = 60
+  let g:neovide_no_idle = v:true
+  let g:neovide_cursor_animation_length = 0.0
+endif
+
 function! g:OSX()
   return has('macunix')
 endfunction
@@ -62,8 +71,10 @@ if WINDOWS()
     set fileencodings=ucs-bom,utf-8,utf-16le,cp1252,iso-8859-15
   endif
 
-  " use directx rendering font in Windows for better text
-  set renderoptions=type:directx
+  if !has('nvim')
+    " use directx rendering font in Windows for better text
+    set renderoptions=type:directx
+  endif
 else
   " set default encoding to utf-8
   set encoding=utf-8
@@ -143,8 +154,25 @@ if has('gui_running')
     " check and determine the gui font after GUIEnter.
     " NOTE: getfontname function only works after GUIEnter.
     au!
-    au GUIEnter * call s:set_gui_font()
+
+    if has('nvim')
+      au UIEnter * call s:set_gui_font_nvim()
+    else
+      au GUIEnter * call s:set_gui_font()
+    endif
   augroup END
+
+  " set guifont
+  function! s:set_gui_font_nvim()
+    if WINDOWS()
+      set guifont=FuraMono\ Nerd\ Font:h11
+      set guifontwide=Microsoft\ YaHei\ Mono:h11
+    elseif OSX()
+      set guifont=FuraMono\ Nerd\ Font:h13
+    else
+      set guifont=FuraMono\ Nerd\ Font\ 12
+    endif
+  endfunction
 
   " set guifont
   function! s:set_gui_font()
@@ -530,6 +558,9 @@ function s:fmt_file()
 endfunction
 
 " buffer operation
+if has('nvim')
+  unmap <C-l>
+endif
 nnoremap <unique> <silent> <Leader>bd :EXbd<CR>
 nnoremap <unique> <silent> <C-l> :EXbn<CR>
 nnoremap <unique> <silent> <C-h> :EXbp<CR>
@@ -721,7 +752,12 @@ let g:ale_rust_analyzer_config = {
       \}
 
 set omnifunc=ale#completion#OmniFunc
-set completeopt=menu,menuone,popup,noselect,noinsert
+if has('nvim')
+  set completeopt=menu,menuone,noselect,noinsert
+else
+  set completeopt=menu,menuone,popup,noselect,noinsert
+endif
+
 nnoremap <leader>] :ALEGoToDefinition<CR>
 nnoremap <leader>[ :ALEHover<CR>
 " NOTE: we do this in s:fmt_file()
