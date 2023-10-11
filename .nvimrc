@@ -3,6 +3,16 @@
 "/////////////////////////////////////////////////////////////////////////////
 
 set nocompatible " be iMproved, required
+set termguicolors
+
+if exists("g:neovide")
+  let g:neovide_scroll_animation_length = 0.3
+  let g:neovide_hide_mouse_when_typing = v:true
+  let g:neovide_refresh_rate = 60
+  let g:neovide_refresh_rate_idle = 60
+  let g:neovide_no_idle = v:true
+  let g:neovide_cursor_animation_length = 0.0
+endif
 
 function! g:OSX()
   return has('macunix')
@@ -57,9 +67,6 @@ if WINDOWS()
     " want to try them first.
     set fileencodings=ucs-bom,utf-8,utf-16le,cp1252,iso-8859-15
   endif
-
-  " use directx rendering font in Windows for better text
-  set renderoptions=type:directx
 else
   " set default encoding to utf-8
   set encoding=utf-8
@@ -140,48 +147,18 @@ if has('gui_running')
     " NOTE: getfontname function only works after GUIEnter.
     au!
 
-    au GUIEnter * call s:set_gui_font()
+    au UIEnter * call s:set_gui_font_nvim()
   augroup END
 
   " set guifont
-  function! s:set_gui_font()
-    if has('gui_gtk2')
-      if getfontname('FuraMono Nerd Font') != ''
-        set guifont=FuraMono\ Nerd\ Font\ 12
-      elseif getfontname('DejaVu Sans Mono for Powerline') != ''
-        set guifont=DejaVu\ Sans\ Mono\ for\ Powerline\ 12
-      elseif getfontname('DejaVu Sans Mono') != ''
-        set guifont=DejaVu\ Sans\ Mono\ 12
-      else
-        set guifont=Luxi\ Mono\ 12
-      endif
-    elseif has('x11')
-      " Also for GTK 1
-      set guifont=*-lucidatypewriter-medium-r-normal-*-*-180-*-*-m-*-*
+  function! s:set_gui_font_nvim()
+    if WINDOWS()
+      set guifont=FuraMono\ Nerd\ Font:h11
+      set guifontwide=Microsoft\ YaHei\ Mono:h11
     elseif OSX()
-      if getfontname('FuraMono Nerd Font') != ''
-        set guifont=FuraMono\ Nerd\ Font:h13
-      elseif getfontname('DejaVu Sans Mono for Powerline') != ''
-        set guifont=DejaVu\ Sans\ Mono\ for\ Powerline:h13
-      elseif getfontname('DejaVu Sans Mono') != ''
-        set guifont=DejaVu\ Sans\ Mono:h13
-      endif
-    elseif WINDOWS()
-      if getfontname('FuraMono Nerd Font') != ''
-        set guifont=FuraMono\ Nerd\ Font:h11
-        set guifontwide=Microsoft\ YaHei\ Mono:h11
-      elseif getfontname('DejaVu Sans Mono for Powerline') != ''
-        set guifont=DejaVu\ Sans\ Mono\ for\ Powerline:h11
-        set guifontwide=Microsoft\ YaHei\ Mono:h11
-      elseif getfontname('DejaVu Sans Mono') != ''
-        set guifont=DejaVu\ Sans\ Mono:h11
-        set guifontwide=Microsoft\ YaHei\ Mono:h11
-      elseif getfontname('Consolas') != ''
-        set guifont=Consolas:h11
-        set guifontwide=Microsoft\ YaHei\ Mono:h11
-      else
-        set guifont=Lucida_Console:h11
-      endif
+      set guifont=FuraMono\ Nerd\ Font:h13
+    else
+      set guifont=FuraMono\ Nerd\ Font\ 12
     endif
   endfunction
 endif
@@ -527,6 +504,7 @@ function s:fmt_file()
 endfunction
 
 " buffer operation
+unmap <C-l>
 nnoremap <unique> <silent> <Leader>bd :EXbd<CR>
 nnoremap <unique> <silent> <C-l> :EXbn<CR>
 nnoremap <unique> <silent> <C-h> :EXbp<CR>
@@ -558,7 +536,7 @@ set background=dark
 "" ---------------------------------------------------
 "
 "let g:airline_theme='one'
-"if has('gui_running')
+"if has('gui_running') || has('nvim')
 "  let g:airline_powerline_fonts = 1
 "else
 "  let g:airline_powerline_fonts = 0
@@ -718,7 +696,7 @@ let g:ale_rust_analyzer_config = {
       \}
 
 set omnifunc=ale#completion#OmniFunc
-set completeopt=menu,menuone,popup,noselect,noinsert
+set completeopt=menu,menuone,noselect,noinsert
 
 nnoremap <leader>] :ALEGoToDefinition<CR>
 nnoremap <leader>[ :ALEHover<CR>

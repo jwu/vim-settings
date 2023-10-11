@@ -43,6 +43,7 @@
 
 ## NeoVim
 
+- [neovide](https://github.com/neovide/neovide)
 - [nvim-qt](https://github.com/equalsraf/neovim-qt)
   - Windows install: `choco install neovim`
   - [See the windows installation guide of neovim](https://github.com/neovim/neovim/wiki/Installing-Neovim#windows)
@@ -56,7 +57,7 @@
 ```vim
 set runtimepath^=~/vimfiles
 let &packpath = &runtimepath
-source your\vim\path\.vimrc
+source your\vim\path\.nvimrc
 ```
 
 **ginit.vim**
