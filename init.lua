@@ -18,7 +18,7 @@ function LINUX()
 end
 
 function WINDOWS()
-  return vim.loop.os_uname().sysname == 'Windows'
+  return vim.loop.os_uname().sysname == 'Windows_NT'
 end
 
 -- TODO: delme
@@ -464,16 +464,20 @@ end
 vim.opt.rtp:prepend(lazypath)
 
 require("lazy").setup({
+  -- color theme
+  {
+    'rakr/vim-one',
+    init = function()
+      vim.cmd('colorscheme one')
+      vim.opt.background = 'dark'
+    end,
+  },
+
   -- exvim-lite
   {
     'jwu/exvim-lite',
     config = function()
       local function find_file()
-        if vim.g.NERDTree.IsOpen() then
-          vim.cmd('NERDTreeFind')
-          return
-        end
-
         vim.cmd('EXProjectFind')
       end
 
@@ -505,15 +509,6 @@ require("lazy").setup({
 
       -- format
       vim.keymap.set('n', '<leader>w', fmt_file, { noremap = true, unique = true })
-    end,
-  },
-
-  -- color theme
-  {
-    'rakr/vim-one',
-    config = function()
-      vim.cmd('colorscheme one')
-      vim.opt.background = 'dark'
     end,
   },
 
@@ -725,6 +720,59 @@ require("lazy").setup({
   -- },
   {
     'neovim/nvim-lspconfig',
+    config = function()
+      local lspconfig = require('lspconfig')
+
+      -- rust
+      lspconfig.rust_analyzer.setup {
+        settings = {
+          ['rust-analyzer'] = {},
+        },
+      }
+
+      -- csharp
+      local pid = vim.fn.getpid()
+      local omnisharp_bin = 'd:\\utils\\omnisharp.win-x64\\OmniSharp.exe'
+      lspconfig.omnisharp.setup {
+        cmd = { omnisharp_bin, "--languageserver" , "--hostPID", tostring(pid) },
+      }
+
+      -- Use LspAttach autocommand to only map the following keys
+      -- after the language server attaches to the current buffer
+      vim.api.nvim_create_autocmd('LspAttach', {
+        group = vim.api.nvim_create_augroup('UserLspConfig', {}),
+        callback = function(ev)
+          -- Enable completion triggered by <c-x><c-o>
+          vim.bo[ev.buf].omnifunc = 'v:lua.vim.lsp.omnifunc'
+          vim.bo[ev.buf].completeopt = 'menu,menuone,popup,noselect,noinsert'
+
+          -- Buffer local mappings.
+          -- See `:help vim.lsp.*` for documentation on any of the below functions
+          local opts = { noremap = true, silent = true, buffer = ev.buf }
+          vim.keymap.set('n', '<leader>[', vim.lsp.buf.declaration, opts)
+          vim.keymap.set('n', '<leader>]', vim.lsp.buf.definition, opts)
+          vim.keymap.set('n', 'K', vim.lsp.buf.hover, opts)
+
+          -- vim.keymap.set('n', 'gD', vim.lsp.buf.declaration, opts)
+          -- vim.keymap.set('n', 'gd', vim.lsp.buf.definition, opts)
+          -- vim.keymap.set('n', 'K', vim.lsp.buf.hover, opts)
+          -- vim.keymap.set('n', 'gi', vim.lsp.buf.implementation, opts)
+          -- vim.keymap.set('n', '<C-k>', vim.lsp.buf.signature_help, opts)
+          -- vim.keymap.set('n', '<space>wa', vim.lsp.buf.add_workspace_folder, opts)
+          -- vim.keymap.set('n', '<space>wr', vim.lsp.buf.remove_workspace_folder, opts)
+          -- vim.keymap.set('n', '<space>wl', function()
+          --   print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
+          -- end, opts)
+          -- vim.keymap.set('n', '<space>D', vim.lsp.buf.type_definition, opts)
+          -- vim.keymap.set('n', '<space>rn', vim.lsp.buf.rename, opts)
+          -- vim.keymap.set({ 'n', 'v' }, '<space>ca', vim.lsp.buf.code_action, opts)
+          -- vim.keymap.set('n', 'gr', vim.lsp.buf.references, opts)
+          -- vim.keymap.set('n', '<space>f', function()
+          --   vim.lsp.buf.format { async = true }
+          -- end, opts)
+        end,
+      })
+    end,
   },
 
   -- file operation
@@ -740,7 +788,30 @@ require("lazy").setup({
       vim.keymap.set('n', '<leader>bs', ':CtrlPBuffer<CR>', { noremap = true, unique = true })
     end,
   },
-  'nvim-tree/nvim-tree.lua',
+  {
+    'nvim-tree/nvim-tree.lua',
+    dependencies = {
+      'nvim-tree/nvim-web-devicons',
+    },
+    config = function()
+      vim.g.loaded_netrw = 1
+      vim.g.loaded_netrwPlugin = 1
+      vim.opt.termguicolors = true
+
+      require("nvim-tree").setup({
+        sort_by = "case_sensitive",
+        view = {
+          width = 30,
+        },
+        renderer = {
+          group_empty = true,
+        },
+        filters = {
+          dotfiles = true,
+        },
+      })
+    end
+  },
 
   -- text editing
   {
