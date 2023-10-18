@@ -2,6 +2,13 @@
 -- basic
 -- /////////////////////////////////////////////////////////////////////////////
 
+vim.g.neovide_scroll_animation_length = 0.3
+vim.g.neovide_hide_mouse_when_typing = true
+vim.g.neovide_refresh_rate = 60
+vim.g.neovide_refresh_rate_idle = 60
+vim.g.neovide_no_idle = true
+vim.g.neovide_cursor_animation_length = 0.0
+
 function OSX()
   return vim.loop.os_uname().sysname == 'Darwin'
 end
@@ -13,6 +20,21 @@ end
 function WINDOWS()
   return vim.loop.os_uname().sysname == 'Windows'
 end
+
+-- TODO: delme
+vim.cmd([[
+  function! g:OSX()
+    return has('macunix')
+  endfunction
+
+  function! g:LINUX()
+    return has('unix') && !has('macunix') && !has('win32unix')
+  endfunction
+
+  function! g:WINDOWS()
+    return (has('win16') || has('win32') || has('win64'))
+  endfunction
+]])
 
 -- /////////////////////////////////////////////////////////////////////////////
 -- language and encoding setup
@@ -295,7 +317,7 @@ vim.api.nvim_create_autocmd({'BufReadPost'}, {
   pattern = {'*'},
   callback = function()
     if vim.fn.line("'\"") > 0 and vim.fn.line("'\"") <= vim.fn.line("$") then
-      vim.cmd('normal g`\"')
+      vim.cmd('normal g`"')
     end
   end,
   group = ex_group,
@@ -311,7 +333,7 @@ vim.api.nvim_create_autocmd({'BufNewFile', 'BufEnter'}, {
 -- ensure every file does syntax highlighting (full)
 vim.api.nvim_create_autocmd({'BufEnter'}, {
   pattern = {'*'},
-  command = ':syntax sync fromstart',
+  command = 'syntax sync fromstart',
   group = ex_group,
 })
 
@@ -354,22 +376,22 @@ vim.api.nvim_create_autocmd({'FileType'}, {
 -- disable auto-comment for c/cpp, lua, javascript, c# and vim-script
 vim.api.nvim_create_autocmd({'FileType'}, {
   pattern = {'c', 'cpp', 'java', 'javascript'},
-  command = 'set comments=sO:* -,mO:*  ,exO:*/,s1:/*,mb:*,ex:*/,f://',
+  command = [[set comments=sO:*\ -,mO:*\ \ ,exO:*/,s1:/*,mb:*,ex:*/,f://]],
   group = ex_group,
 })
 vim.api.nvim_create_autocmd({'FileType'}, {
   pattern = {'cs'},
-  command = 'set comments=sO:* -,mO:*  ,exO:*/,s1:/*,mb:*,ex:*/,f:///,f://',
+  command = [[set comments=sO:*\ -,mO:*\ \ ,exO:*/,s1:/*,mb:*,ex:*/,f:///,f://]],
   group = ex_group,
 })
 vim.api.nvim_create_autocmd({'FileType'}, {
   pattern = {'vim'},
-  command = 'set comments=sO:" -,mO:"  ,eO:"",f:"',
+  command = [[set comments=sO:\"\ -,mO:\"\ \ ,eO:\"\",f:\"]],
   group = ex_group,
 })
 vim.api.nvim_create_autocmd({'FileType'}, {
   pattern = {'lua'},
-  command = 'set comments=f:--',
+  command = [[set comments=f:--]],
   group = ex_group,
 })
 
@@ -425,262 +447,6 @@ vim.api.nvim_create_autocmd({'FileType'}, {
 })
 
 -- /////////////////////////////////////////////////////////////////////////////
---  vim-plug setup
--- /////////////////////////////////////////////////////////////////////////////
-
--- exvim-lite
------------------------------------------------------
-
-local function find_file()
-  if vim.g.NERDTree.IsOpen() then
-    vim.cmd('NERDTreeFind')
-    return
-  end
-
-  vim.cmd('EXProjectFind')
-end
-
-local function fmt_file()
-  vim.cmd('StripWhitespace')
-  -- use this than exec 'ALEFix' to prevent 'no fixer found error'
-  vim.cmd('silent call ale#fix#Fix(bufnr(\'\'), \'!\')')
-  print('file formatted!')
-end
-
--- buffer operation
-vim.keymap.set('n', '<leader>bd', ':EXbd<CR>', { noremap = true, silent = true, unique = true })
-vim.keymap.del('n', '<C-l>')
-vim.keymap.set('n', '<C-l>', ':EXbn<CR>', { noremap = true, silent = true, unique = true })
-vim.keymap.set('n', '<C-h>', ':EXbp<CR>', { noremap = true, silent = true, unique = true })
-vim.keymap.set('n', '<C-Tab>', ':EXbalt<CR>', { noremap = true, silent = true, unique = true })
-
--- plugin<->edit window switch
-vim.keymap.set('n', '<leader><Tab>', ':EXsw<CR>', { noremap = true, silent = true, unique = true })
-vim.keymap.set('n', '<leader><Esc>', ':EXgp<CR><ESC>', { silent = true, unique = true })
-
--- search
-vim.keymap.set('n', '<leader>F', ':GS<space>', { noremap = true, unique = true })
-vim.keymap.set('n', '<leader>gg', ':EXSearchCWord<CR>', { noremap = true, unique = true })
-vim.keymap.set('n', '<leader>gs', ':call ex#search#toggle_window()<CR>', { noremap = true, unique = true })
-
--- project
-vim.keymap.set('n', '<leader>fc', find_file, { noremap = true, unique = true })
-
--- format
-vim.keymap.set('n', '<leader>w', fmt_file, { noremap = true, unique = true })
-
--- lightline
------------------------------------------------------
-
-function LightlineBranch()
-  if vim.o.buftype == 'nofile' then
-    return ''
-  end
-
-  return ' ' .. vim.fn.FugitiveHead()
-end
-
-function LightlineFmod()
-  -- if &modified
-  --   exe printf('hi link ModifiedColor Statement')
-  -- else
-  --   exe printf('hi link ModifiedColor NonText')
-  -- endif
-  local fname = vim.fn.fnamemodify(expand('%'), ':p:.:gs?\\?/?')
-  local mod = vim.o.modified and ' [+]' or ''
-  local ro = vim.o.readonly and ' [RO]' or ''
-
-  return fname .. mod .. ro
-end
-
-vim.g.lightline = {
-  colorscheme = 'one',
-  active = {
-    left = {
-      {'mode', 'paste'},
-      {'gitbranch'},
-      {'fmod'},
-    },
-    right = {
-      {'lineinfo'},
-      {'fileinfo'},
-      {'filetype'},
-    },
-  },
-  inactive = {
-    left = {
-      {'fmod'},
-    },
-    right = {
-      {'lineinfo'},
-      {'fileinfo'},
-      {'filetype'},
-    },
-  },
-  component = {
-    lineinfo = " %p%% %l/%v %{line('$')}",
-    fileinfo = '%{&fenc!=#""?&fenc:&enc}[%{&ff}]',
-  },
-  component_function = {
-    gitbranch = 'LightlineBranch',
-    fmod = 'LightlineFmod',
-  },
-  separator = {
-    left = '', right = ''
-  },
-  subseparator = {
-    left = '', right = ''
-  },
-}
-
--- " TODO:
--- " function! LightlineFileformat()
--- "   return winwidth(0) > 70 ? &fileformat : ''
--- " endfunction
---
--- " ex-easyhl
--- " ---------------------------------------------------
---
--- " hi clear EX_HL_cursorhl
--- " hi EX_HL_cursorhl gui=none guibg=white term=none cterm=none ctermbg=white
---
--- hi clear EX_HL_label1
--- hi EX_HL_label1 gui=none guibg=darkred term=none cterm=none ctermbg=darkred
---
--- hi clear EX_HL_label2
--- hi EX_HL_label2 gui=none guibg=darkmagenta term=none cterm=none ctermbg=darkmagenta
---
--- hi clear EX_HL_label3
--- hi EX_HL_label3 gui=none guibg=darkblue term=none cterm=none ctermbg=darkblue
---
--- hi clear EX_HL_label4
--- hi EX_HL_label4 gui=none guibg=darkgreen term=none cterm=none ctermbg=darkgreen
---
--- " ex-showmarks
--- " ---------------------------------------------------
---
--- let g:showmarks_enable = 1
--- let showmarks_include = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
---
--- " Ignore help, quickfix, non-modifiable buffers
--- let showmarks_ignore_type = 'hqm'
---
--- " Hilight lower & upper marks
--- let showmarks_hlline_lower = 1
--- let showmarks_hlline_upper = 0
---
--- " For marks a-z
--- hi clear ShowMarksHLl
--- hi ShowMarksHLl term=bold cterm=none ctermbg=lightblue gui=none guibg=SlateBlue
---
--- " For marks A-Z
--- hi clear ShowMarksHLu
--- hi ShowMarksHLu term=bold cterm=bold ctermbg=lightred ctermfg=darkred gui=bold guibg=lightred guifg=darkred
---
--- " omnisharp-vim
--- " ---------------------------------------------------
---
--- let g:OmniSharp_server_stdio = 1
--- if WINDOWS()
---   let g:OmniSharp_server_path = 'd:\utils\omnisharp.win-x64\OmniSharp.exe'
--- endif
--- let g:OmniSharp_highlight_groups = {
---       \ 'ExcludedCode': 'Normal'
---       \}
---
--- " ale
--- " ---------------------------------------------------
---
--- let g:ale_hover_cursor = 0 " disable hover cursor
--- let g:ale_hover_to_preview = 0 " disable hover preview window
--- let g:ale_set_balloons = 0 " disable hover mouse
--- let g:ale_floating_preview = 1 " NOTE: Vim 8+, long messages will be shown in a preview window, so we use this instead
--- let g:ale_floating_window_border = ['│', '─', '╭', '╮', '╯', '╰', '│', '─']
---
--- let g:ale_completion_enabled = 0
--- let g:ale_linters_explicit = 1 " Only run linters named in ale_linters settings.
--- let g:ale_linters = {
---       \  'cs': ['OmniSharp'],
---       \  'rust': ['analyzer']
---       \}
--- let g:ale_fixers = {
---       \  'rust': ['rustfmt']
---       \}
--- let g:ale_rust_analyzer_config = {
---       \   'diagnostics': {
---       \     'disabled': ['inactive-code']
---       \   }
---       \}
---
--- set omnifunc=ale#completion#OmniFunc
--- set completeopt=menu,menuone,popup,noselect,noinsert
---
--- nnoremap <leader>] :ALEGoToDefinition<CR>
--- nnoremap <leader>[ :ALEHover<CR>
--- " NOTE: we do this in s:fmt_file()
--- " nnoremap <unique> <leader>w :ALEFix<CR>
---
--- " rust.vim
--- " ---------------------------------------------------
---
--- " NOTE: we use ale & rust-analyzer instead
--- let g:rustfmt_autosave = 0
--- let g:rustfmt_autosave_if_config_present = 0
--- let g:syntastic_rust_checkers = []
---
--- " ctrlp
--- " ---------------------------------------------------
---
--- let g:ctrlp_working_path_mode = ''
--- " let g:ctrlp_match_window = 'bottom,order:ttb,min:1,max:10,results:10'
--- let g:ctrlp_follow_symlinks = 2
--- let g:ctrlp_max_files = 0 " Unset cap of 10,000 files so we find everything
--- nnoremap <unique> <leader>bs :CtrlPBuffer<CR>
---
--- " nerdtree
--- " ---------------------------------------------------
---
--- let g:NERDTreeWinSize = 30
--- let g:NERDTreeWinSizeMax = 60
--- let g:NERDTreeMouseMode = 1
--- let g:NERDTreeMapToggleZoom = '<Space>'
---
--- " vim-commentary
--- " ---------------------------------------------------
---
--- xmap <leader>/ <Plug>Commentary
--- nmap <leader>/ <Plug>CommentaryLine
---
--- autocmd FileType cs setlocal commentstring=\/\/\ %s
---
--- " vim-surround
--- " ---------------------------------------------------
---
--- xmap s <Plug>VSurround
---
--- " tabular
--- " ---------------------------------------------------
---
--- nnoremap <silent> <leader>= :call g:Tabular(1)<CR>
--- xnoremap <silent> <leader>= :call g:Tabular(0)<CR>
--- function! g:Tabular(ignore_range) range
---   let c = getchar()
---   let c = nr2char(c)
---   if a:ignore_range == 0
---     exec printf('%d,%dTabularize /%s', a:firstline, a:lastline, c)
---   else
---     exec printf('Tabularize /%s', c)
---   endif
--- endfunction
---
--- " vim-better-whitespace
--- " ---------------------------------------------------
---
--- let g:better_whitespace_guicolor = 'darkred'
--- " NOTE: we do this in s:fmt_file()
--- " nnoremap <unique> <leader>w :StripWhitespace<CR>
-
--- /////////////////////////////////////////////////////////////////////////////
 -- Plugs
 -- /////////////////////////////////////////////////////////////////////////////
 
@@ -699,7 +465,48 @@ vim.opt.rtp:prepend(lazypath)
 
 require("lazy").setup({
   -- exvim-lite
-  'jwu/exvim-lite',
+  {
+    'jwu/exvim-lite',
+    config = function()
+      local function find_file()
+        if vim.g.NERDTree.IsOpen() then
+          vim.cmd('NERDTreeFind')
+          return
+        end
+
+        vim.cmd('EXProjectFind')
+      end
+
+      local function fmt_file()
+        vim.cmd('StripWhitespace')
+        -- use this than exec 'ALEFix' to prevent 'no fixer found error'
+        vim.cmd('silent call ale#fix#Fix(bufnr(\'\'), \'!\')')
+        print('file formatted!')
+      end
+
+      -- buffer operation
+      vim.keymap.set('n', '<leader>bd', ':EXbd<CR>', { noremap = true, silent = true, unique = true })
+      vim.keymap.del('n', '<C-l>')
+      vim.keymap.set('n', '<C-l>', ':EXbn<CR>', { noremap = true, silent = true, unique = true })
+      vim.keymap.set('n', '<C-h>', ':EXbp<CR>', { noremap = true, silent = true, unique = true })
+      vim.keymap.set('n', '<C-Tab>', ':EXbalt<CR>', { noremap = true, silent = true, unique = true })
+
+      -- plugin<->edit window switch
+      vim.keymap.set('n', '<leader><Tab>', ':EXsw<CR>', { noremap = true, silent = true, unique = true })
+      vim.keymap.set('n', '<leader><Esc>', ':EXgp<CR><ESC>', { silent = true, unique = true })
+
+      -- search
+      vim.keymap.set('n', '<leader>F', ':GS<space>', { noremap = true, unique = true })
+      vim.keymap.set('n', '<leader>gg', ':EXSearchCWord<CR>', { noremap = true, unique = true })
+      vim.keymap.set('n', '<leader>gs', ':call ex#search#toggle_window()<CR>', { noremap = true, unique = true })
+
+      -- project
+      vim.keymap.set('n', '<leader>fc', find_file, { noremap = true, unique = true })
+
+      -- format
+      vim.keymap.set('n', '<leader>w', fmt_file, { noremap = true, unique = true })
+    end,
+  },
 
   -- color theme
   {
@@ -711,18 +518,158 @@ require("lazy").setup({
   },
 
   -- visual enhancement
-  'itchyny/lightline.vim',
+  {
+    'itchyny/lightline.vim',
+    config = function()
+      vim.api.nvim_exec([[
+        function! LightlineBranch()
+          if &buftype == 'nofile'
+            return ''
+          endif
+
+          return ' ' .. FugitiveHead()
+        endfunction
+
+        function! LightlineFmod()
+          " if &modified
+          "   exe printf('hi link ModifiedColor Statement')
+          " else
+          "   exe printf('hi link ModifiedColor NonText')
+          " endif
+          let fname = fnamemodify(expand('%'), ':p:.:gs?\\?/?')
+          let mod = &modified ? ' [+]' : ''
+          let ro = &readonly ? ' [RO]' : ''
+
+          return fname .. mod .. ro
+        endfunction
+      ]], true)
+
+      vim.g.lightline = {
+        colorscheme = 'one',
+        active = {
+          left = {
+            {'mode', 'paste'},
+            {'gitbranch'},
+            {'fmod'},
+          },
+          right = {
+            {'lineinfo'},
+            {'fileinfo'},
+            {'filetype'},
+          },
+        },
+        inactive = {
+          left = {
+            {'fmod'},
+          },
+          right = {
+            {'lineinfo'},
+            {'fileinfo'},
+            {'filetype'},
+          },
+        },
+        component = {
+          lineinfo = " %p%% %l/%v %{line('$')}",
+          fileinfo = '%{&fenc!=#""?&fenc:&enc}[%{&ff}]',
+        },
+        component_function = {
+          gitbranch = 'LightlineBranch',
+          fmod = 'LightlineFmod',
+        },
+        separator = {
+          left = '', right = ''
+        },
+        subseparator = {
+          left = '', right = ''
+        },
+      }
+    end,
+  },
   -- TODO: 'nvim-lualine/lualine.nvim',
+  -- local function LightlineBranch()
+  --   if vim.o.buftype == 'nofile' then
+  --     return ''
+  --   end
+
+  --   return ' ' .. vim.fn.FugitiveHead()
+  -- end
+
+  -- local function LightlineFmod()
+  --   -- if &modified
+  --   --   exe printf('hi link ModifiedColor Statement')
+  --   -- else
+  --   --   exe printf('hi link ModifiedColor NonText')
+  --   -- endif
+  --   local fname = vim.fn.fnamemodify(expand('%'), ':p:.:gs?\\?/?')
+  --   local mod = vim.o.modified and ' [+]' or ''
+  --   local ro = vim.o.readonly and ' [RO]' or ''
+
+  --   return fname .. mod .. ro
+  -- end
+
 
   -- text highlight
-  'exvim/ex-easyhl',
-  'exvim/ex-showmarks',
+  {
+    'exvim/ex-easyhl',
+    config = function()
+      vim.cmd([[
+        hi clear EX_HL_label1
+        hi EX_HL_label1 gui=none guibg=darkred term=none cterm=none ctermbg=darkred
+
+        hi clear EX_HL_label2
+        hi EX_HL_label2 gui=none guibg=darkmagenta term=none cterm=none ctermbg=darkmagenta
+
+        hi clear EX_HL_label3
+        hi EX_HL_label3 gui=none guibg=darkblue term=none cterm=none ctermbg=darkblue
+
+        hi clear EX_HL_label4
+        hi EX_HL_label4 gui=none guibg=darkgreen term=none cterm=none ctermbg=darkgreen
+      ]])
+    end,
+  },
+
+  {
+    'exvim/ex-showmarks',
+    init = function()
+      vim.g.showmarks_enable = 1
+      vim.g.showmarks_include = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
+
+      -- Ignore help, quickfix, non-modifiable buffers
+      vim.g.showmarks_ignore_type = 'hqm'
+
+      -- Hilight lower & upper marks
+      vim.g.showmarks_hlline_lower = 1
+      vim.g.showmarks_hlline_upper = 0
+    end,
+    config = function()
+      -- For marks a-z
+      vim.cmd([[
+        hi clear ShowMarksHLl
+        hi ShowMarksHLl term=bold cterm=none ctermbg=lightblue gui=none guibg=SlateBlue
+      ]])
+
+      -- For marks A-Z
+      vim.cmd([[
+        hi clear ShowMarksHLu
+        hi ShowMarksHLu term=bold cterm=bold ctermbg=lightred ctermfg=darkred gui=bold guibg=lightred guifg=darkred
+      ]])
+    end,
+  },
 
   -- syntax highlight/check
   'scrooloose/syntastic',
   'tikhomirov/vim-glsl',
   'drichardson/vex.vim',
-  'rust-lang/rust.vim',
+  {
+    'rust-lang/rust.vim',
+    init = function()
+      -- NOTE: we use ale & rust-analyzer instead
+      vim.g.rustfmt_autosave = 0
+      vim.g.rustfmt_autosave_if_config_present = 0
+      vim.g.syntastic_rust_checkers = {}
+    end
+  },
+
   'cespare/vim-toml',
 
   -- complete
@@ -730,19 +677,118 @@ require("lazy").setup({
   'exvim/ex-autocomplpop',
 
   -- lsp
-  'dense-analysis/ale',
-  'jwu/omnisharp-vim',
+  -- {
+  --   'dense-analysis/ale',
+  --   init = function()
+  --     vim.g.ale_hover_cursor = 0 -- disable hover cursor
+  --     vim.g.ale_hover_to_preview = 0 -- disable hover preview window
+  --     vim.g.ale_set_balloons = 0 -- disable hover mouse
+  --     vim.g.ale_floating_preview = 1 -- NOTE: Vim 8+, long messages will be shown in a preview window, so we use this instead
+  --     vim.g.ale_floating_window_border = ['│', '─', '╭', '╮', '╯', '╰', '│', '─']
+
+  --     vim.g.ale_completion_enabled = 0
+  --     vim.g.ale_linters_explicit = 1 -- Only run linters named in ale_linters settings.
+  --     vim.g.ale_linters = {
+  --       cs = {'OmniSharp'},
+  --       rust = {'analyzer'}
+  --     }
+  --     vim.g.ale_fixers = {
+  --       rust = {'rustfmt'}
+  --     }
+  --     vim.g.ale_rust_analyzer_config = {
+  --       diagnostics = {
+  --         disabled = {'inactive-code'}
+  --       }
+  --     }
+  --   end,
+  --   config = function()
+  --     vim.opt.omnifunc = 'ale#completion#OmniFunc'
+  --     vim.opt.completeopt = 'menu,menuone,popup,noselect,noinsert'
+
+  --     vim.keymap.set('n', '<leader>]', ':ALEGoToDefinition<CR>', { noremap = true })
+  --     vim.keymap.set('n', '<leader>[', ':ALEHover<CR>', { noremap = true })
+  --     -- NOTE: we do this in s:fmt_file()
+  --     -- nnoremap <unique> <leader>w :ALEFix<CR>
+  --   end,
+  -- },
+  -- {
+  --   'jwu/omnisharp-vim',
+  --   init = function()
+  --     vim.g.OmniSharp_server_stdio = 1
+  --     if WINDOWS() then
+  --       vim.g.OmniSharp_server_path = 'd:\\utils\\omnisharp.win-x64\\OmniSharp.exe'
+  --     end
+  --     vim.g.OmniSharp_highlight_groups = {
+  --       'ExcludedCode': 'Normal'
+  --     }
+  --   end,
+  -- },
+  {
+    'neovim/nvim-lspconfig',
+  },
 
   -- file operation
-  'kien/ctrlp.vim',
+  {
+    'kien/ctrlp.vim',
+    init = function()
+      vim.g.ctrlp_working_path_mode = ''
+      -- let vim.g.ctrlp_match_window = 'bottom,order:ttb,min:1,max:10,results:10'
+      vim.g.ctrlp_follow_symlinks = 2
+      vim.g.ctrlp_max_files = 0 -- Unset cap of 10,000 files so we find everything
+    end,
+    config = function()
+      vim.keymap.set('n', '<leader>bs', ':CtrlPBuffer<CR>', { noremap = true, unique = true })
+    end,
+  },
   'nvim-tree/nvim-tree.lua',
 
   -- text editing
-  'tpope/vim-commentary',
-  'tpope/vim-surround',
+  {
+    'tpope/vim-commentary',
+    config = function()
+      vim.keymap.set('x', '<leader>/', '<Plug>Commentary')
+      vim.keymap.set('n', '<leader>/', '<Plug>CommentaryLine')
+
+      vim.api.nvim_create_autocmd({'FileType'}, {
+        pattern = {'cs'},
+        command = [[setlocal commentstring=\/\/\ %s]],
+      })
+    end,
+  },
+  {
+    'tpope/vim-surround',
+    config = function()
+      vim.keymap.set('x', 's', '<Plug>VSurround')
+    end,
+  },
   'vim-scripts/VisIncr',
-  'godlygeek/tabular',
-  'jwu/vim-better-whitespace',
+  {
+    'godlygeek/tabular',
+    config = function()
+      vim.cmd([[
+        function! g:Tabular(ignore_range) range
+          let c = getchar()
+          let c = nr2char(c)
+          if a:ignore_range == 0
+            exec printf('%d,%dTabularize /%s', a:firstline, a:lastline, c)
+          else
+            exec printf('Tabularize /%s', c)
+          endif
+        endfunction
+      ]])
+
+      vim.keymap.set('n', '<leader>=', ':call g:Tabular(1)<CR>', { noremap = true, silent = true })
+      vim.keymap.set('x', '<leader>=', ':call g:Tabular(0)<CR>', { noremap = true, silent = true })
+    end,
+  },
+  {
+    'jwu/vim-better-whitespace',
+    init = function()
+      vim.g.better_whitespace_guicolor = 'darkred'
+      -- NOTE: we do this in s:fmt_file()
+      -- nnoremap <unique> <leader>w :StripWhitespace<CR>
+    end,
+  },
 
   -- git operation
   'tpope/vim-fugitive',
