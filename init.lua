@@ -2,7 +2,7 @@
 -- basic
 -- /////////////////////////////////////////////////////////////////////////////
 
-vim.g.neovide_scroll_animation_length = 0.3
+vim.g.neovide_scroll_animation_length = 0.0
 vim.g.neovide_hide_mouse_when_typing = true
 vim.g.neovide_refresh_rate = 60
 vim.g.neovide_refresh_rate_idle = 60
@@ -483,8 +483,9 @@ require("lazy").setup({
 
       local function fmt_file()
         vim.cmd('StripWhitespace')
+        -- TODO: change to lspconfig
         -- use this than exec 'ALEFix' to prevent 'no fixer found error'
-        vim.cmd('silent call ale#fix#Fix(bufnr(\'\'), \'!\')')
+        -- vim.cmd('silent call ale#fix#Fix(bufnr(\'\'), \'!\')')
         print('file formatted!')
       end
 
@@ -602,6 +603,21 @@ require("lazy").setup({
   --   return fname .. mod .. ro
   -- end
 
+  {
+    'petertriho/nvim-scrollbar',
+    config = function()
+      require("scrollbar").setup({
+        handle = {
+          text = " ",
+          blend = 30, -- Integer between 0 and 100. 0 for fully opaque and 100 to full transparent. Defaults to 30.
+          color = nil,
+          color_nr = nil, -- cterm
+          highlight = "Tabline",
+          hide_if_all_visible = true, -- Hides handle if all lines are visible
+        },
+      })
+    end,
+  },
 
   -- text highlight
   {
