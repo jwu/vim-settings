@@ -204,6 +204,7 @@ vim.opt.ve = 'block' -- in visual block mode, cursor can be positioned where the
 -- set Number format to null(default is octal), when press CTRL-A on number
 -- like 007, it would not become 010
 vim.opt.nf = ''
+vim.opt.completeopt = 'menu,menuone,noinsert,noselect'
 
 --------------------------------------------------------------------
 -- Desc: Fold text
@@ -760,7 +761,6 @@ require("lazy").setup({
         callback = function(ev)
           -- Enable completion triggered by <c-x><c-o>
           vim.bo[ev.buf].omnifunc = 'v:lua.vim.lsp.omnifunc'
-          vim.bo[ev.buf].completeopt = 'menu,menuone,popup,noselect,noinsert'
 
           -- Buffer local mappings.
           -- See `:help vim.lsp.*` for documentation on any of the below functions
