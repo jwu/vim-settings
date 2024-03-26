@@ -1,6 +1,20 @@
 # Install
 
-1. copy `.vimrc` to `YOUR_VIM_DIR/.vimrc`
+vim + gvim
+
+1. install gvim
+1. copy `.vimrc` to `${YOUR_VIM_DIR}/.vimrc`
+1. install `vim-plug`
+1. install `rg`
+1. install `fonts`
+1. install `omnisharp`
+
+nvim + neovide
+
+1. install nvim
+1. install neovide
+1. copy `init.lua` to `c:\Users\${YOUR_NAME}\AppData\Local\nvim\init.lua`
+1. copy `config.toml` to `c:\Users\${YOUR_NAME}\AppData\Roaming\neovide\config.toml`
 1. install `vim-plug`
 1. install `rg`
 1. install `fonts`
@@ -40,29 +54,3 @@
 - [powerline-fonts](https://github.com/powerline/fonts)
 - [top-programming-fonts](https://github.com/hbin/top-programming-fonts)
 - [Microsoft-Yahei-Mono.ttf](https://github.com/whorusq/sublime-text-3/blob/master/fonts/Microsoft-Yahei-Mono.ttf)
-
-## NeoVim
-
-- [neovide](https://github.com/neovide/neovide)
-- [nvim-qt](https://github.com/equalsraf/neovim-qt)
-  - Windows install: `choco install neovim`
-  - [See the windows installation guide of neovim](https://github.com/neovim/neovim/wiki/Installing-Neovim#windows)
-- [vimr](https://github.com/qvacua/vimr)
-  - Mac install `brew cask install vimr`
-
-### NeoVim additional setup
-
-**init.vim**
-
-```vim
-set runtimepath^=~/vimfiles
-let &packpath = &runtimepath
-source your\vim\path\.nvimrc
-```
-
-**ginit.vim**
-
-```vim
-silent exec 'GuiFont! DejaVu Sans Mono for Powerline:h12'
-call rpcnotify(1, 'Gui', 'Option', 'Tabline', 0)
-```
