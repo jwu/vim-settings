@@ -154,6 +154,7 @@ vim.opt.titlestring = '%t (%{expand("%:p:h")})'
 vim.opt.lines = 40
 vim.opt.columns = 130
 vim.opt.showfulltag = true -- show tag with function protype.
+vim.opt.signcolumn = 'auto'
 
 -- disable menu, toolbar and scrollbar
 -- vim.opt.guioptions = vim.opt.guioptions - 'm' -- disable Menu
@@ -467,11 +468,51 @@ vim.opt.rtp:prepend(lazypath)
 require("lazy").setup({
   -- color theme
   {
-    'rakr/vim-one',
-    init = function()
-      vim.cmd('colorscheme one')
-      vim.opt.background = 'dark'
-    end,
+    'navarasu/onedark.nvim',
+    config = function()
+      require('onedark').setup {
+        style = 'dark',
+        transparent = false,
+        term_colors = true,
+        ending_tildes = false,
+        cmp_itemkind_reverse = false,
+
+        -- Options are italic, bold, underline, none
+        code_style = {
+          comments = 'none',
+          keywords = 'none',
+          functions = 'none',
+          strings = 'none',
+          variables = 'none'
+        },
+
+        lualine = {
+          transparent = false,
+        },
+
+        -- Custom Highlights --
+        colors = {},
+        highlights = {
+          -- exvim/ex-easyhl
+          ["EX_HL_label1"] = { bg = 'darkred'},
+          ["EX_HL_label2"] = { bg = 'darkmagenta'},
+          ["EX_HL_label3"] = { bg = 'darkblue'},
+          ["EX_HL_label4"] = { bg = 'darkgreen'},
+
+          -- 'exvim/ex-showmarks'
+          ["ShowMarksHLl"] = {bg = 'slateblue', fmt = 'none'},
+          ["ShowMarksHLu"] = {fg = 'darkred', bg = 'lightred', fmt = 'bold'},
+        },
+
+        -- Plugins Config --
+        diagnostics = {
+          darker = true,
+          undercurl = true,
+          background = true,
+        },
+      }
+      require('onedark').load()
+    end
   },
 
   -- exvim-lite
@@ -516,98 +557,80 @@ require("lazy").setup({
 
   -- visual enhancement
   {
-    'itchyny/lightline.vim',
+    'nvim-lualine/lualine.nvim',
+    dependencies = { 'nvim-tree/nvim-web-devicons' },
     config = function()
-      vim.api.nvim_exec([[
-        function! LightlineBranch()
-          if &buftype == 'nofile'
-            return ''
-          endif
+      local function lineinfo()
+        return "%p%% %l:%v %{line('$')}"
+      end
 
-          return ' ' .. FugitiveHead()
-        endfunction
-
-        function! LightlineFmod()
-          " if &modified
-          "   exe printf('hi link ModifiedColor Statement')
-          " else
-          "   exe printf('hi link ModifiedColor NonText')
-          " endif
-          let fname = fnamemodify(expand('%'), ':p:.:gs?\\?/?')
-          let mod = &modified ? ' [+]' : ''
-          let ro = &readonly ? ' [RO]' : ''
-
-          return fname .. mod .. ro
-        endfunction
-      ]], true)
-
-      vim.g.lightline = {
-        colorscheme = 'one',
-        active = {
-          left = {
-            {'mode', 'paste'},
-            {'gitbranch'},
-            {'fmod'},
+      require('lualine').setup {
+        options = {
+          icons_enabled = true,
+          theme = 'onedark',
+          component_separators = { left = '', right = ''},
+          section_separators = { left = '', right = ''},
+          disabled_filetypes = {
+            statusline = {},
+            winbar = {},
           },
-          right = {
-            {'lineinfo'},
-            {'fileinfo'},
-            {'filetype'},
-          },
+          ignore_focus = {},
+          always_divide_middle = true,
+          globalstatus = false,
+          refresh = {
+            statusline = 1000,
+            tabline = 1000,
+            winbar = 1000,
+          }
         },
-        inactive = {
-          left = {
-            {'fmod'},
-          },
-          right = {
-            {'lineinfo'},
-            {'fileinfo'},
-            {'filetype'},
-          },
+        sections = {
+          lualine_a = {'mode'},
+          lualine_b = {'branch'},
+          lualine_c = {'filename'},
+          lualine_x = {'filetype'},
+          lualine_y = {'encoding', 'fileformat'},
+          lualine_z = {'progress', 'location'}
+          -- lualine_z = {lineinfo}
         },
-        component = {
-          lineinfo = " %p%% %l/%v %{line('$')}",
-          fileinfo = '%{&fenc!=#""?&fenc:&enc}[%{&ff}]',
+        inactive_sections = {
+          lualine_a = {},
+          lualine_b = {},
+          lualine_c = {'filename'},
+          lualine_x = {'filetype'},
+          lualine_y = {'encoding', 'fileformat'},
+          lualine_z = {'progress', 'location'}
         },
-        component_function = {
-          gitbranch = 'LightlineBranch',
-          fmod = 'LightlineFmod',
-        },
-        separator = {
-          left = '', right = ''
-        },
-        subseparator = {
-          left = '', right = ''
-        },
+        tabline = {},
+        winbar = {},
+        inactive_winbar = {},
+        extensions = {}
       }
     end,
   },
-  -- TODO: 'nvim-lualine/lualine.nvim',
-  -- local function LightlineBranch()
-  --   if vim.o.buftype == 'nofile' then
-  --     return ''
-  --   end
-
-  --   return ' ' .. vim.fn.FugitiveHead()
-  -- end
-
-  -- local function LightlineFmod()
-  --   -- if &modified
-  --   --   exe printf('hi link ModifiedColor Statement')
-  --   -- else
-  --   --   exe printf('hi link ModifiedColor NonText')
-  --   -- endif
-  --   local fname = vim.fn.fnamemodify(expand('%'), ':p:.:gs?\\?/?')
-  --   local mod = vim.o.modified and ' [+]' or ''
-  --   local ro = vim.o.readonly and ' [RO]' or ''
-
-  --   return fname .. mod .. ro
-  -- end
-
   {
     'petertriho/nvim-scrollbar',
+    dependencies = {
+      'kevinhwang91/nvim-hlslens',
+      'lewis6991/gitsigns.nvim',
+    },
     config = function()
-      require("scrollbar").setup({
+      require('gitsigns').setup {
+        update_debounce = 100,
+      }
+      require("scrollbar.handlers.gitsigns").setup()
+
+      require("scrollbar.handlers.search").setup {
+        override_lens = function() end, -- leave only search marks and disable virtual text
+      }
+
+      require("scrollbar").setup {
+        show = true,
+        show_in_active_only = false,
+        set_highlights = true,
+        folds = 1000, -- handle folds, set to number to disable folds if no. of lines in buffer exceeds this
+        max_lines = false, -- disables if no. of lines in buffer exceeds this
+        hide_if_all_visible = false, -- Hides everything if all lines are visible
+        throttle_ms = 100,
         handle = {
           text = " ",
           blend = 30, -- Integer between 0 and 100. 0 for fully opaque and 100 to full transparent. Defaults to 30.
@@ -616,29 +639,67 @@ require("lazy").setup({
           highlight = "Tabline",
           hide_if_all_visible = true, -- Hides handle if all lines are visible
         },
-      })
+        marks = {
+          Cursor = {
+            text = "•",
+            priority = 0,
+            gui = nil,
+            color = nil,
+            cterm = nil,
+            color_nr = nil, -- cterm
+            highlight = "Normal",
+          },
+          Search = {
+            text = { "-", "=" },
+            priority = 1,
+            gui = nil,
+            color = nil,
+            cterm = nil,
+            color_nr = nil, -- cterm
+            highlight = "Type",
+          },
+          GitAdd = {
+            text = "┆",
+            priority = 7,
+            gui = nil,
+            color = nil,
+            cterm = nil,
+            color_nr = nil, -- cterm
+            highlight = "GitSignsAdd",
+          },
+          GitChange = {
+            text = "┆",
+            priority = 7,
+            gui = nil,
+            color = nil,
+            cterm = nil,
+            color_nr = nil, -- cterm
+            highlight = "GitSignsChange",
+          },
+          GitDelete = {
+            text = "▁",
+            priority = 7,
+            gui = nil,
+            color = nil,
+            cterm = nil,
+            color_nr = nil, -- cterm
+            highlight = "GitSignsDelete",
+          },
+        },
+        handlers = {
+          cursor = true,
+          diagnostic = true,
+          gitsigns = true, -- Requires gitsigns
+          handle = true,
+          search = true, -- Requires hlslens
+          ale = false, -- Requires ALE
+        },
+      }
     end,
   },
 
   -- text highlight
-  {
-    'exvim/ex-easyhl',
-    config = function()
-      vim.cmd([[
-        hi clear EX_HL_label1
-        hi EX_HL_label1 gui=none guibg=darkred term=none cterm=none ctermbg=darkred
-
-        hi clear EX_HL_label2
-        hi EX_HL_label2 gui=none guibg=darkmagenta term=none cterm=none ctermbg=darkmagenta
-
-        hi clear EX_HL_label3
-        hi EX_HL_label3 gui=none guibg=darkblue term=none cterm=none ctermbg=darkblue
-
-        hi clear EX_HL_label4
-        hi EX_HL_label4 gui=none guibg=darkgreen term=none cterm=none ctermbg=darkgreen
-      ]])
-    end,
-  },
+  'exvim/ex-easyhl',
 
   {
     'exvim/ex-showmarks',
@@ -653,22 +714,27 @@ require("lazy").setup({
       vim.g.showmarks_hlline_lower = 1
       vim.g.showmarks_hlline_upper = 0
     end,
-    config = function()
-      -- For marks a-z
-      vim.cmd([[
-        hi clear ShowMarksHLl
-        hi ShowMarksHLl term=bold cterm=none ctermbg=lightblue gui=none guibg=SlateBlue
-      ]])
-
-      -- For marks A-Z
-      vim.cmd([[
-        hi clear ShowMarksHLu
-        hi ShowMarksHLu term=bold cterm=bold ctermbg=lightred ctermfg=darkred gui=bold guibg=lightred guifg=darkred
-      ]])
-    end,
   },
 
   -- syntax highlight/check
+  -- {
+  --   'nvim-treesitter/nvim-treesitter',
+  --   build = ":TSUpdate",
+  --   config = function()
+  --     require('nvim-treesitter.configs').setup {
+  --       ensure_installed = {},
+  --       sync_install = false,
+  --       auto_install = true,
+  --       ignore_install = {},
+  --       highlight = {
+  --         enable = true,
+  --         disable = {},
+  --         additional_vim_regex_highlighting = false,
+  --       },
+  --     }
+  --   end,
+  -- },
+
   'scrooloose/syntastic',
   'tikhomirov/vim-glsl',
   'drichardson/vex.vim',
@@ -681,7 +747,6 @@ require("lazy").setup({
       vim.g.syntastic_rust_checkers = {}
     end
   },
-
   'cespare/vim-toml',
 
   -- complete
@@ -814,7 +879,7 @@ require("lazy").setup({
       vim.g.loaded_netrwPlugin = 1
       vim.opt.termguicolors = true
 
-      require("nvim-tree").setup({
+      require("nvim-tree").setup {
         sort_by = "case_sensitive",
         view = {
           width = 30,
@@ -822,10 +887,13 @@ require("lazy").setup({
         renderer = {
           group_empty = true,
         },
+        git = {
+          show_on_dirs = true,
+        },
         filters = {
           dotfiles = true,
         },
-      })
+      }
     end
   },
 
