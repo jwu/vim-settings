@@ -588,6 +588,7 @@ require("lazy").setup({
       }
     end,
   },
+
   {
     'petertriho/nvim-scrollbar',
     dependencies = {
@@ -678,6 +679,7 @@ require("lazy").setup({
       }
     end,
   },
+
   {
     'lukas-reineke/indent-blankline.nvim',
     config = function()
@@ -705,6 +707,7 @@ require("lazy").setup({
       }
     end,
   },
+
   {
     'echasnovski/mini.indentscope',
     config = function()
@@ -723,6 +726,7 @@ require("lazy").setup({
 
   -- text highlight
   'exvim/ex-easyhl',
+
   {
     'exvim/ex-showmarks',
     init = function()
@@ -737,6 +741,16 @@ require("lazy").setup({
       vim.g.showmarks_hlline_upper = 0
     end,
   },
+
+  -- TODO: adjust highlight
+  -- {
+  --   'RRethy/vim-illuminate',
+  --   config = function()
+  --     require('illuminate').configure{
+  --       delay = 100,
+  --     }
+  --   end,
+  -- },
 
   -- syntax highlight/check
   {
@@ -784,7 +798,7 @@ require("lazy").setup({
 
   -- complete
   'exvim/ex-searchcompl',
-  'exvim/ex-autocomplpop',
+  -- 'exvim/ex-autocomplpop',
 
   -- lsp
   -- {
@@ -894,17 +908,37 @@ require("lazy").setup({
 
   -- file operation
   {
-    'kien/ctrlp.vim',
-    init = function()
-      vim.g.ctrlp_working_path_mode = ''
-      -- let vim.g.ctrlp_match_window = 'bottom,order:ttb,min:1,max:10,results:10'
-      vim.g.ctrlp_follow_symlinks = 2
-      vim.g.ctrlp_max_files = 0 -- Unset cap of 10,000 files so we find everything
-    end,
+    'nvim-telescope/telescope.nvim',
+    dependencies = {
+      'nvim-lua/plenary.nvim'
+    },
     config = function()
-      vim.keymap.set('n', '<leader>bs', ':CtrlPBuffer<CR>', { noremap = true, unique = true })
-    end,
+      local builtin = require('telescope.builtin')
+      local themes = require('telescope.themes')
+      local function find_files()
+        builtin.find_files(themes.get_dropdown())
+      end
+
+      vim.keymap.set('n', '<C-p>', find_files, {})
+      -- vim.keymap.set('n', '<leader>fg', builtin.live_grep, {})
+      -- vim.keymap.set('n', '<leader>fb', builtin.buffers, {})
+      -- vim.keymap.set('n', '<leader>fh', builtin.help_tags, {})
+
+      -- TODO:
+      -- require('telescope').setup {
+      --   defaults = {
+      --   },
+      --   pickers = {
+      --     find_files = {
+      --       theme = "dropdown",
+      --     }
+      --   },
+      --   extensions = {
+      --   }
+      -- }
+    end
   },
+
   {
     'nvim-tree/nvim-tree.lua',
     dependencies = {
