@@ -9,32 +9,21 @@ vim.g.neovide_refresh_rate_idle = 60
 vim.g.neovide_no_idle = true
 vim.g.neovide_cursor_animation_length = 0.0
 
-function OSX()
+local function OSX()
   return vim.loop.os_uname().sysname == 'Darwin'
 end
 
-function LINUX()
+local function LINUX()
   return vim.loop.os_uname().sysname == 'Linux'
 end
 
-function WINDOWS()
+local function WINDOWS()
   return vim.loop.os_uname().sysname == 'Windows_NT'
 end
 
--- TODO: delme
-vim.cmd([[
-  function! g:OSX()
-    return has('macunix')
-  endfunction
-
-  function! g:LINUX()
-    return has('unix') && !has('macunix') && !has('win32unix')
-  endfunction
-
-  function! g:WINDOWS()
-    return (has('win16') || has('win32') || has('win64'))
-  endfunction
-]])
+_G.OSX = OSX
+_G.LINUX = LINUX
+_G.WINDOWS = WINDOWS
 
 -- /////////////////////////////////////////////////////////////////////////////
 -- language and encoding setup
@@ -178,23 +167,16 @@ vim.opt.cinoptions = '>s,e0,n0,f0,{0,}0,^0,L0:0,=s,l0,b0,g0,hs,N0,E0,ps,ts,is,+s
 -- set cinkeys=0{,0},0),:,!^F,o,O,e
 
 -- official diff settings
--- function MyDiff()
---   local opt = '-a --binary -w '
---   if vim.o.diffopt == 'icase' then opt = opt .. '-i ' end
---   if vim.o.diffopt == 'iwhite' then opt = opt .. '-b ' end
+local function MyDiff()
+  local opt = '-a --binary -w '
+  if vim.o.diffopt == 'icase' then opt = opt .. '-i ' end
+  if vim.o.diffopt == 'iwhite' then opt = opt .. '-b ' end
+  vim.cmd('silent !diff ' .. opt .. vim.v.fname_in .. ' ' .. vim.v.fname_new .. ' > ' .. vim.v.fname_out)
+  vim.cmd('redraw!')
+end
 
---   local arg1 = vim.v.fname_in
---   if arg1 == ' ' then arg1 = '"' .. arg1 .. '"' end
-
---   local arg2 = vim.v.fname_new
---   if arg2 == ' ' then arg2 = '"' .. arg2 .. '"' end
-
---   local arg3 = vim.v.fname_out
---   if arg3 == ' ' then arg3 = '"' .. arg3 .. '"' end
-
---   vim.cmd('!diff ' .. opt .. arg1 .. ' ' .. arg2 .. ' > ' .. arg3)
--- end
--- vim.opt.diffexpr = MyDiff()
+_G.MyDiff = MyDiff
+vim.opt.diffexpr = "luaeval('MyDiff()')"
 
 vim.opt.cindent = true -- set cindent on to autoinent when editing c/c++ file
 vim.opt.shiftwidth = 2 -- 2 shift width
@@ -338,21 +320,19 @@ vim.api.nvim_create_autocmd({'BufEnter'}, {
   command = 'syntax sync fromstart',
   group = ex_group,
 })
-
--- for avs syntax file.
 vim.api.nvim_create_autocmd({'BufNewFile', 'BufRead'}, {
-  pattern = {'*.avs'},
-  command = 'set syntax=avs',
+  pattern = {'*.hlsl', '*.shader', '*.cg', '*.cginc', '*.vs', '*.fs', '*.fx', '*.fxh', '*.vsh', '*.psh', '*.shd'},
+  command = 'set ft=hlsl',
   group = ex_group,
 })
 vim.api.nvim_create_autocmd({'BufNewFile', 'BufRead'}, {
-  pattern = {'*.vs', '*.fs', '*.hlsl', '*.fx', '*.fxh', '*.cg', '*.cginc', '*.vsh', '*.psh', '*.shd', '*.glsl'},
+  pattern = {'*.glsl'},
   command = 'set ft=glsl',
   group = ex_group,
 })
 vim.api.nvim_create_autocmd({'BufNewFile', 'BufRead'}, {
-  pattern = {'*.shader'},
-  command = 'set ft=shader',
+  pattern = {'*.avs'},
+  command = 'set syntax=avs',
   group = ex_group,
 })
 
@@ -469,6 +449,7 @@ require("lazy").setup({
   -- color theme
   {
     'navarasu/onedark.nvim',
+    priority = 100,
     config = function()
       require('onedark').setup {
         style = 'dark',
@@ -697,10 +678,51 @@ require("lazy").setup({
       }
     end,
   },
+  {
+    'lukas-reineke/indent-blankline.nvim',
+    config = function()
+      require("ibl").setup {
+        indent = {
+          char = "▏",
+          tab_char = "▏",
+        },
+        scope = { enabled = false },
+        exclude = {
+          filetypes = {
+            "help",
+            "alpha",
+            "dashboard",
+            "neo-tree",
+            "Trouble",
+            "trouble",
+            "lazy",
+            "mason",
+            "notify",
+            "toggleterm",
+            "lazyterm",
+          },
+        },
+      }
+    end,
+  },
+  {
+    'echasnovski/mini.indentscope',
+    config = function()
+      local mini_is = require('mini.indentscope')
+      mini_is.setup {
+        symbol = "▏",
+        draw = {
+          delay = 100,
+          animation = mini_is.gen_animation.none(),
+          priority = 2,
+        },
+        options = { try_as_border = true },
+      }
+    end,
+  },
 
   -- text highlight
   'exvim/ex-easyhl',
-
   {
     'exvim/ex-showmarks',
     init = function()
@@ -717,37 +739,48 @@ require("lazy").setup({
   },
 
   -- syntax highlight/check
-  -- {
-  --   'nvim-treesitter/nvim-treesitter',
-  --   build = ":TSUpdate",
-  --   config = function()
-  --     require('nvim-treesitter.configs').setup {
-  --       ensure_installed = {},
-  --       sync_install = false,
-  --       auto_install = true,
-  --       ignore_install = {},
-  --       highlight = {
-  --         enable = true,
-  --         disable = {},
-  --         additional_vim_regex_highlighting = false,
-  --       },
-  --     }
-  --   end,
-  -- },
+  {
+    'nvim-treesitter/nvim-treesitter',
+    build = ":TSUpdate",
+    config = function()
+      require('nvim-treesitter.configs').setup {
+        ensure_installed = {
+          "c", "cpp", "c_sharp", "rust", "go",
+          "python", "lua", "javascript", "typescript", "vim",
+          "css", "hlsl", "glsl", "wgsl",
+          "json", "toml", "yaml", "xml", "html",
+          "vimdoc", "markdown", "markdown_inline",
+          "diff", "query",
+        },
+        sync_install = false,
+        auto_install = false,
+        ignore_install = {},
+        highlight = {
+          enable = true,
+          disable = {},
+          additional_vim_regex_highlighting = false,
+        },
+      }
+    end,
+  },
 
-  'scrooloose/syntastic',
   'tikhomirov/vim-glsl',
   'drichardson/vex.vim',
-  {
-    'rust-lang/rust.vim',
-    init = function()
-      -- NOTE: we use ale & rust-analyzer instead
-      vim.g.rustfmt_autosave = 0
-      vim.g.rustfmt_autosave_if_config_present = 0
-      vim.g.syntastic_rust_checkers = {}
-    end
-  },
   'cespare/vim-toml',
+
+  -- TODO: delme
+  -- 'scrooloose/syntastic',
+
+  -- TODO: delme
+  -- {
+  --   'rust-lang/rust.vim',
+  --   init = function()
+  --     -- NOTE: we use ale & rust-analyzer instead
+  --     vim.g.rustfmt_autosave = 0
+  --     vim.g.rustfmt_autosave_if_config_present = 0
+  --     vim.g.syntastic_rust_checkers = {}
+  --   end
+  -- },
 
   -- complete
   'exvim/ex-searchcompl',
@@ -788,6 +821,8 @@ require("lazy").setup({
   --     -- nnoremap <unique> <leader>w :ALEFix<CR>
   --   end,
   -- },
+
+  -- TODO: delme
   -- {
   --   'jwu/omnisharp-vim',
   --   init = function()
@@ -800,6 +835,7 @@ require("lazy").setup({
   --     }
   --   end,
   -- },
+
   {
     'neovim/nvim-lspconfig',
     config = function()
@@ -910,12 +946,14 @@ require("lazy").setup({
       })
     end,
   },
+
   {
     'tpope/vim-surround',
     config = function()
       vim.keymap.set('x', 's', '<Plug>VSurround')
     end,
   },
+
   'vim-scripts/VisIncr',
   {
     'godlygeek/tabular',
@@ -936,6 +974,7 @@ require("lazy").setup({
       vim.keymap.set('x', '<leader>=', ':call g:Tabular(0)<CR>', { noremap = true, silent = true })
     end,
   },
+
   {
     'jwu/vim-better-whitespace',
     init = function()
@@ -946,5 +985,6 @@ require("lazy").setup({
   },
 
   -- git operation
+  'sindrets/diffview.nvim',
   'tpope/vim-fugitive',
 })

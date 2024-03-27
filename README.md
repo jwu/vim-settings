@@ -14,13 +14,20 @@
 
 1. install [nvim](https://neovim.io/)
 1. install [neovide](https://neovide.dev/)
+  1. run it first
 1. copy `init.lua` to `c:\Users\${YOUR_NAME}\AppData\Local\nvim\init.lua`
 1. copy `config.toml` to `c:\Users\${YOUR_NAME}\AppData\Roaming\neovide\config.toml`
 1. install [lazy.nvim](https://github.com/folke/lazy.nvim)
 1. install [rg](https://github.com/BurntSushi/ripgrep)
 1. install `fonts`
+1. compile `nvim-treesitter` parsers
+  1. For Windows user, just read [MSVC](https://github.com/nvim-treesitter/nvim-treesitter/wiki/Windows-support#msvc) session
+  1. Install [Visual Studio Build Tools](https://visualstudio.microsoft.com/en/downloads/#build-tools-for-visual-studio-2022)
+  1. Open `x64 Native Tools Command Prompt`
+  1. Open `neovide`
+  1. Wait until the compile finish
 
-## useful tools
+## refs
 
 ### rust-analyzer
 
@@ -29,11 +36,6 @@
   - add `c:\bin\` to Environment Path
   - Mac install: extract package in `/usr/local/bin/`
   - `chmod +x /usr/local/bin/rust-analyzer`
-
-### jq
-
-- [jq](https://github.com/stedolan/jq)
-  - windows install: `choco install jq`
 
 ### Fonts
 
