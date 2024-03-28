@@ -208,11 +208,6 @@ vim.opt.hlsearch = true -- highlight search terms
 vim.opt.ignorecase = true -- set search/replace pattern to ignore case
 vim.opt.smartcase = true -- set smartcase mode on, If there is upper case character in the search patern, the 'ignorecase' option will be override.
 
--- TODO: use rg instead
--- set this to use id-utils for global search
--- vim.opt.grepprg = 'lid -Rgrep -s'
--- vim.opt.grepformat = '%f:%l:%m'
-
 -- /////////////////////////////////////////////////////////////////////////////
 --  Key Mappings
 -- /////////////////////////////////////////////////////////////////////////////
@@ -251,8 +246,9 @@ vim.keymap.set('n', '<S-Down>', '<C-W><Down>', { noremap = true })
 vim.keymap.set('n', '<S-Left>', '<C-W><Left>', { noremap = true })
 vim.keymap.set('n', '<S-Right>', '<C-W><Right>', { noremap = true })
 
+-- DISABLE
 -- map Ctrl-Space to Omni Complete
-vim.keymap.set('i', '<C-Space>', '<C-X><C-O>', { noremap = true })
+-- vim.keymap.set('i', '<C-Space>', '<C-X><C-O>', { noremap = true })
 
 -- -- NOTE: if we already map to EXbn,EXbp. skip setting this
 -- -- easy buffer navigation
@@ -275,7 +271,6 @@ vim.keymap.set('v', '>', '>gv', { noremap = true })
 vim.keymap.set('', '<Up>', 'gk', { noremap = true })
 vim.keymap.set('', '<Down>', 'gj', { noremap = true })
 
--- TODO: I should write a better one, make it as plugin exvim/swapword
 -- VimTip 329: A map for swapping words
 -- http://vim.sourceforge.net/tip_view.php?tip_id=
 -- Then when you put the cursor on or in a word, press "\sw", and
@@ -805,41 +800,64 @@ require("lazy").setup({
       'hrsh7th/cmp-buffer',
       'hrsh7th/cmp-path',
       'hrsh7th/cmp-cmdline',
+      'L3MON4D3/LuaSnip',
+      'saadparwaiz1/cmp_luasnip',
     },
     config = function()
       local cmp = require('cmp')
+      local luasnip = require('luasnip')
+
       cmp.setup {
         completion = {
           completeopt = 'menu,menuone,noselect,noinsert',
         },
 
         mapping = cmp.mapping.preset.insert({
+          ['<C-Space>'] = cmp.mapping.complete(),
+          ['<CR>'] = cmp.mapping.confirm({ select = true }), -- Accept currently selected item. Set `select` to `false` to only confirm explicitly selected items.
+          ['<C-e>'] = cmp.mapping.abort(),
           ['<C-b>'] = cmp.mapping.scroll_docs(-4),
           ['<C-f>'] = cmp.mapping.scroll_docs(4),
-          ['<C-Space>'] = cmp.mapping.complete(),
-          ['<C-e>'] = cmp.mapping.abort(),
-          ['<CR>'] = cmp.mapping.confirm({ select = true }), -- Accept currently selected item. Set `select` to `false` to only confirm explicitly selected items.
+
+          -- next
+          ['<C-j>'] = cmp.mapping(function(fallback)
+            if cmp.visible() then
+              cmp.select_next_item({ behavior = cmp.SelectBehavior.Select })
+            end
+          end, { 'i', 's', 'c' }),
+
+          -- prev
+          ['<C-k>'] = cmp.mapping(function(fallback)
+            if cmp.visible() then
+              cmp.select_prev_item({ behavior = cmp.SelectBehavior.Select })
+            end
+          end, { 'i', 's', 'c' }),
+
+          -- Tab
+          ["<Tab>"] = cmp.mapping(function(fallback)
+            -- This little snippet will confirm with tab, and if no entry is selected, will confirm the first item
+            if cmp.visible() then
+              local entry = cmp.get_selected_entry()
+              if not entry then
+                cmp.select_next_item({ behavior = cmp.SelectBehavior.Select })
+              end
+              cmp.confirm()
+            else
+              fallback()
+            end
+          end, { 'i', 's', 'c' }),
         }),
 
-        -- TODO
-        -- snippet = {
-        --   -- REQUIRED - you must specify a snippet engine
-        --   expand = function(args)
-        --     vim.fn["vsnip#anonymous"](args.body) -- For `vsnip` users.
-        --     -- require('luasnip').lsp_expand(args.body) -- For `luasnip` users.
-        --     -- require('snippy').expand_snippet(args.body) -- For `snippy` users.
-        --     -- vim.fn["UltiSnips#Anon"](args.body) -- For `ultisnips` users.
-        --     -- vim.snippet.expand(args.body) -- For native neovim snippets (Neovim v0.10+)
-        --   end,
-        -- },
+        snippet = {
+          expand = function(args)
+            luasnip.lsp_expand(args.body)
+          end,
+        },
 
         sources = cmp.config.sources({
           { name = 'nvim_lsp' },
           { name = 'path' },
-          -- { name = 'vsnip' }, -- For vsnip users.
-          -- { name = 'luasnip' }, -- For luasnip users.
-          -- { name = 'ultisnips' }, -- For ultisnips users.
-          -- { name = 'snippy' }, -- For snippy users.
+          { name = 'luasnip' },
         }, {
           { name = 'buffer' },
         })
@@ -848,6 +866,9 @@ require("lazy").setup({
       -- Use buffer source for `/` and `?` (if you enabled `native_menu`, this won't work anymore).
       cmp.setup.cmdline({ '/', '?' }, {
         mapping = cmp.mapping.preset.cmdline(),
+        view = {
+          entries = { name = 'wildmenu', separator = ' | ' }
+        },
         sources = {
           { name = 'buffer' }
         }
@@ -856,6 +877,9 @@ require("lazy").setup({
       -- Use cmdline & path source for ':' (if you enabled `native_menu`, this won't work anymore).
       cmp.setup.cmdline(':', {
         mapping = cmp.mapping.preset.cmdline(),
+        view = {
+          entries = { name = 'wildmenu', separator = ' | ' }
+        },
         sources = cmp.config.sources({
           { name = 'path' }
         }, {
@@ -898,7 +922,6 @@ require("lazy").setup({
       }
       lspconfig.omnisharp.setup {
         capabilities = capabilities,
-        -- cmd = { "dotnet", vim.fn.stdpath "data" .. "/mason/packages/omnisharp/libexec/OmniSharp.dll" },
         root_dir = function ()
           return vim.loop.cwd()
         end,
@@ -936,6 +959,9 @@ require("lazy").setup({
       })
     end,
   },
+
+  -- TODO: https://github.com/mfussenegger/nvim-lint
+  -- TODO: https://github.com/neomake/neomake
 
   ------------------------------
   -- file operation
