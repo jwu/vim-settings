@@ -22,7 +22,7 @@
 1. install `fonts`
 1. compile `nvim-treesitter` parsers
   1. For Windows user, just read [MSVC](https://github.com/nvim-treesitter/nvim-treesitter/wiki/Windows-support#msvc) session
-  1. Install [Visual Studio Build Tools](https://visualstudio.microsoft.com/en/downloads/#build-tools-for-visual-studio-2022)
+  1. Install [Visual Studio Build Tools](https://visualstudio.microsoft.com/zh-hans/downloads/?q=build+tools+for+visual+studio)
   1. Open `x64 Native Tools Command Prompt`
   1. Open `neovide`
   1. Wait until the compile finish
