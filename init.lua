@@ -446,7 +446,10 @@ end
 vim.opt.rtp:prepend(lazypath)
 
 require("lazy").setup({
+  ------------------------------
   -- color theme
+  ------------------------------
+
   {
     'navarasu/onedark.nvim',
     priority = 100,
@@ -481,8 +484,8 @@ require("lazy").setup({
           ["EX_HL_label4"] = { bg = 'darkgreen'},
 
           -- 'exvim/ex-showmarks'
-          ["ShowMarksHLl"] = {bg = 'slateblue', fmt = 'none'},
-          ["ShowMarksHLu"] = {fg = 'darkred', bg = 'lightred', fmt = 'bold'},
+          ["ShowMarksHLl"] = { bg = 'slateblue', fmt = 'none' },
+          ["ShowMarksHLu"] = { fg = 'darkred', bg = 'lightred', fmt = 'bold' },
         },
 
         -- Plugins Config --
@@ -496,7 +499,10 @@ require("lazy").setup({
     end
   },
 
+  ------------------------------
   -- exvim-lite
+  ------------------------------
+
   {
     'jwu/exvim-lite',
     config = function()
@@ -506,9 +512,7 @@ require("lazy").setup({
 
       local function fmt_file()
         vim.cmd('StripWhitespace')
-        -- TODO: change to lspconfig
-        -- use this than exec 'ALEFix' to prevent 'no fixer found error'
-        -- vim.cmd('silent call ale#fix#Fix(bufnr(\'\'), \'!\')')
+        vim.lsp.buf.format { async = true }
         print('file formatted!')
       end
 
@@ -536,7 +540,10 @@ require("lazy").setup({
     end,
   },
 
+  ------------------------------
   -- visual enhancement
+  ------------------------------
+
   {
     'nvim-lualine/lualine.nvim',
     dependencies = { 'nvim-tree/nvim-web-devicons' },
@@ -724,7 +731,10 @@ require("lazy").setup({
     end,
   },
 
+  ------------------------------
   -- text highlight
+  ------------------------------
+
   'exvim/ex-easyhl',
 
   {
@@ -742,7 +752,7 @@ require("lazy").setup({
     end,
   },
 
-  -- TODO: adjust highlight
+  -- TODO: config it
   -- {
   --   'RRethy/vim-illuminate',
   --   config = function()
@@ -752,7 +762,10 @@ require("lazy").setup({
   --   end,
   -- },
 
+  ------------------------------
   -- syntax highlight/check
+  ------------------------------
+
   {
     'nvim-treesitter/nvim-treesitter',
     build = ":TSUpdate",
@@ -782,91 +795,113 @@ require("lazy").setup({
   'drichardson/vex.vim',
   'cespare/vim-toml',
 
-  -- TODO: delme
-  -- 'scrooloose/syntastic',
-
-  -- TODO: delme
-  -- {
-  --   'rust-lang/rust.vim',
-  --   init = function()
-  --     -- NOTE: we use ale & rust-analyzer instead
-  --     vim.g.rustfmt_autosave = 0
-  --     vim.g.rustfmt_autosave_if_config_present = 0
-  --     vim.g.syntastic_rust_checkers = {}
-  --   end
-  -- },
-
+  ------------------------------
   -- complete
-  'exvim/ex-searchcompl',
+  ------------------------------
+
+  {
+    'hrsh7th/nvim-cmp',
+    dependencies = {
+      'hrsh7th/cmp-buffer',
+      'hrsh7th/cmp-path',
+      'hrsh7th/cmp-cmdline',
+    },
+    config = function()
+      local cmp = require('cmp')
+      cmp.setup {
+        completion = {
+          completeopt = 'menu,menuone,noselect,noinsert',
+        },
+
+        mapping = cmp.mapping.preset.insert({
+          ['<C-b>'] = cmp.mapping.scroll_docs(-4),
+          ['<C-f>'] = cmp.mapping.scroll_docs(4),
+          ['<C-Space>'] = cmp.mapping.complete(),
+          ['<C-e>'] = cmp.mapping.abort(),
+          ['<CR>'] = cmp.mapping.confirm({ select = true }), -- Accept currently selected item. Set `select` to `false` to only confirm explicitly selected items.
+        }),
+
+        -- TODO
+        -- snippet = {
+        --   -- REQUIRED - you must specify a snippet engine
+        --   expand = function(args)
+        --     vim.fn["vsnip#anonymous"](args.body) -- For `vsnip` users.
+        --     -- require('luasnip').lsp_expand(args.body) -- For `luasnip` users.
+        --     -- require('snippy').expand_snippet(args.body) -- For `snippy` users.
+        --     -- vim.fn["UltiSnips#Anon"](args.body) -- For `ultisnips` users.
+        --     -- vim.snippet.expand(args.body) -- For native neovim snippets (Neovim v0.10+)
+        --   end,
+        -- },
+
+        sources = cmp.config.sources({
+          { name = 'nvim_lsp' },
+          { name = 'path' },
+          -- { name = 'vsnip' }, -- For vsnip users.
+          -- { name = 'luasnip' }, -- For luasnip users.
+          -- { name = 'ultisnips' }, -- For ultisnips users.
+          -- { name = 'snippy' }, -- For snippy users.
+        }, {
+          { name = 'buffer' },
+        })
+      }
+
+      -- Use buffer source for `/` and `?` (if you enabled `native_menu`, this won't work anymore).
+      cmp.setup.cmdline({ '/', '?' }, {
+        mapping = cmp.mapping.preset.cmdline(),
+        sources = {
+          { name = 'buffer' }
+        }
+      })
+
+      -- Use cmdline & path source for ':' (if you enabled `native_menu`, this won't work anymore).
+      cmp.setup.cmdline(':', {
+        mapping = cmp.mapping.preset.cmdline(),
+        sources = cmp.config.sources({
+          { name = 'path' }
+        }, {
+          { name = 'cmdline' }
+        }),
+        matching = { disallow_symbol_nonprefix_matching = false }
+      })
+    end,
+  },
+
+  -- TODO: delme
   -- 'exvim/ex-autocomplpop',
 
+  ------------------------------
   -- lsp
-  -- {
-  --   'dense-analysis/ale',
-  --   init = function()
-  --     vim.g.ale_hover_cursor = 0 -- disable hover cursor
-  --     vim.g.ale_hover_to_preview = 0 -- disable hover preview window
-  --     vim.g.ale_set_balloons = 0 -- disable hover mouse
-  --     vim.g.ale_floating_preview = 1 -- NOTE: Vim 8+, long messages will be shown in a preview window, so we use this instead
-  --     vim.g.ale_floating_window_border = ['│', '─', '╭', '╮', '╯', '╰', '│', '─']
-
-  --     vim.g.ale_completion_enabled = 0
-  --     vim.g.ale_linters_explicit = 1 -- Only run linters named in ale_linters settings.
-  --     vim.g.ale_linters = {
-  --       cs = {'OmniSharp'},
-  --       rust = {'analyzer'}
-  --     }
-  --     vim.g.ale_fixers = {
-  --       rust = {'rustfmt'}
-  --     }
-  --     vim.g.ale_rust_analyzer_config = {
-  --       diagnostics = {
-  --         disabled = {'inactive-code'}
-  --       }
-  --     }
-  --   end,
-  --   config = function()
-  --     vim.opt.omnifunc = 'ale#completion#OmniFunc'
-  --     vim.opt.completeopt = 'menu,menuone,popup,noselect,noinsert'
-
-  --     vim.keymap.set('n', '<leader>]', ':ALEGoToDefinition<CR>', { noremap = true })
-  --     vim.keymap.set('n', '<leader>[', ':ALEHover<CR>', { noremap = true })
-  --     -- NOTE: we do this in s:fmt_file()
-  --     -- nnoremap <unique> <leader>w :ALEFix<CR>
-  --   end,
-  -- },
-
-  -- TODO: delme
-  -- {
-  --   'jwu/omnisharp-vim',
-  --   init = function()
-  --     vim.g.OmniSharp_server_stdio = 1
-  --     if WINDOWS() then
-  --       vim.g.OmniSharp_server_path = 'd:\\utils\\omnisharp.win-x64\\OmniSharp.exe'
-  --     end
-  --     vim.g.OmniSharp_highlight_groups = {
-  --       'ExcludedCode': 'Normal'
-  --     }
-  --   end,
-  -- },
+  ------------------------------
 
   {
     'neovim/nvim-lspconfig',
+    dependencies = {
+      'hrsh7th/cmp-nvim-lsp',
+      'williamboman/mason.nvim',
+      'williamboman/mason-lspconfig.nvim',
+    },
     config = function()
-      local lspconfig = require('lspconfig')
-
-      -- rust
-      lspconfig.rust_analyzer.setup {
-        settings = {
-          ['rust-analyzer'] = {},
+      require('mason').setup()
+      require('mason-lspconfig').setup {
+        ensure_installed = {
+          'clangd', 'omnisharp', 'rust_analyzer',
+          'lua_ls',
         },
+        automatic_installation = false,
       }
 
-      -- csharp
-      local pid = vim.fn.getpid()
-      local omnisharp_bin = 'd:\\utils\\omnisharp.win-x64\\OmniSharp.exe'
+      local lspconfig = require('lspconfig')
+      local capabilities = require('cmp_nvim_lsp').default_capabilities()
+
+      lspconfig.rust_analyzer.setup {
+        capabilities = capabilities,
+      }
       lspconfig.omnisharp.setup {
-        cmd = { omnisharp_bin, "--languageserver" , "--hostPID", tostring(pid) },
+        capabilities = capabilities,
+        -- cmd = { "dotnet", vim.fn.stdpath "data" .. "/mason/packages/omnisharp/libexec/OmniSharp.dll" },
+        root_dir = function ()
+          return vim.loop.cwd()
+        end,
       }
 
       -- Use LspAttach autocommand to only map the following keys
@@ -878,15 +913,11 @@ require("lazy").setup({
           vim.bo[ev.buf].omnifunc = 'v:lua.vim.lsp.omnifunc'
 
           -- Buffer local mappings.
-          -- See `:help vim.lsp.*` for documentation on any of the below functions
           local opts = { noremap = true, silent = true, buffer = ev.buf }
-          vim.keymap.set('n', '<leader>[', vim.lsp.buf.declaration, opts)
           vim.keymap.set('n', '<leader>]', vim.lsp.buf.definition, opts)
-          vim.keymap.set('n', 'K', vim.lsp.buf.hover, opts)
+          vim.keymap.set('n', '<leader>[', vim.lsp.buf.hover, opts)
 
           -- vim.keymap.set('n', 'gD', vim.lsp.buf.declaration, opts)
-          -- vim.keymap.set('n', 'gd', vim.lsp.buf.definition, opts)
-          -- vim.keymap.set('n', 'K', vim.lsp.buf.hover, opts)
           -- vim.keymap.set('n', 'gi', vim.lsp.buf.implementation, opts)
           -- vim.keymap.set('n', '<C-k>', vim.lsp.buf.signature_help, opts)
           -- vim.keymap.set('n', '<space>wa', vim.lsp.buf.add_workspace_folder, opts)
@@ -906,7 +937,10 @@ require("lazy").setup({
     end,
   },
 
+  ------------------------------
   -- file operation
+  ------------------------------
+
   {
     'nvim-telescope/telescope.nvim',
     dependencies = {
@@ -967,7 +1001,10 @@ require("lazy").setup({
     end
   },
 
+  ------------------------------
   -- text editing
+  ------------------------------
+
   {
     'tpope/vim-commentary',
     config = function()
@@ -1018,7 +1055,25 @@ require("lazy").setup({
     end,
   },
 
+  ------------------------------
   -- git operation
+  ------------------------------
+
   'sindrets/diffview.nvim',
   'tpope/vim-fugitive',
+
+  ------------------------------
+  -- language tools
+  ------------------------------
+
+  -- rust
+  {
+    'simrat39/rust-tools.nvim',
+    config = function()
+      local rt = require('rust-tools')
+
+      rt.setup {}
+      rt.inlay_hints.enable()
+    end,
+  },
 })
