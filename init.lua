@@ -505,10 +505,9 @@ require("lazy").setup({
         vim.cmd('EXProjectFind')
       end
 
-      local function fmt_file()
+      local function strip_ws()
         vim.cmd('StripWhitespace')
-        vim.lsp.buf.format { async = true }
-        print('file formatted!')
+        print('whitespace striped!')
       end
 
       -- buffer operation
@@ -527,11 +526,9 @@ require("lazy").setup({
       vim.keymap.set('n', '<leader>gg', ':EXSearchCWord<CR>', { noremap = true, unique = true })
       vim.keymap.set('n', '<leader>gs', ':call ex#search#toggle_window()<CR>', { noremap = true, unique = true })
 
-      -- project
+      -- plugin hotkey
       vim.keymap.set('n', '<leader>fc', find_file, { noremap = true, unique = true })
-
-      -- format
-      vim.keymap.set('n', '<leader>w', fmt_file, { noremap = true, unique = true })
+      vim.keymap.set('n', '<leader>w', strip_ws, { noremap = true, unique = true })
     end,
   },
 
@@ -939,22 +936,20 @@ require("lazy").setup({
           local opts = { noremap = true, silent = true, buffer = ev.buf }
           vim.keymap.set('n', '<leader>]', vim.lsp.buf.definition, opts)
           vim.keymap.set('n', '<leader>[', vim.lsp.buf.hover, opts)
+          vim.keymap.set('n', '<leader>gr', vim.lsp.buf.references, opts)
+          vim.keymap.set('n', '<leader>gd', vim.lsp.buf.declaration, opts)
+          vim.keymap.set('n', '<leader>gi', vim.lsp.buf.implementation, opts)
+          vim.keymap.set('n', '<leader>gD', vim.lsp.buf.type_definition, opts)
+          vim.keymap.set('n', 'K', vim.lsp.buf.signature_help, opts)
 
-          -- vim.keymap.set('n', 'gD', vim.lsp.buf.declaration, opts)
-          -- vim.keymap.set('n', 'gi', vim.lsp.buf.implementation, opts)
-          -- vim.keymap.set('n', '<C-k>', vim.lsp.buf.signature_help, opts)
-          -- vim.keymap.set('n', '<space>wa', vim.lsp.buf.add_workspace_folder, opts)
-          -- vim.keymap.set('n', '<space>wr', vim.lsp.buf.remove_workspace_folder, opts)
-          -- vim.keymap.set('n', '<space>wl', function()
-          --   print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
-          -- end, opts)
-          -- vim.keymap.set('n', '<space>D', vim.lsp.buf.type_definition, opts)
-          -- vim.keymap.set('n', '<space>rn', vim.lsp.buf.rename, opts)
-          -- vim.keymap.set({ 'n', 'v' }, '<space>ca', vim.lsp.buf.code_action, opts)
-          -- vim.keymap.set('n', 'gr', vim.lsp.buf.references, opts)
-          -- vim.keymap.set('n', '<space>f', function()
-          --   vim.lsp.buf.format { async = true }
-          -- end, opts)
+          vim.keymap.set('n', '<leader>rn', vim.lsp.buf.rename, opts)
+          -- NOTE: format file will strip whitespace first.
+          -- this is because some fmt don't handle whitespace trim well.
+          vim.keymap.set('n', '<leader>ff', function()
+            vim.cmd('StripWhitespace')
+            vim.lsp.buf.format { async = true }
+            print('file formatted!')
+          end, opts)
         end,
       })
     end,
@@ -1076,8 +1071,6 @@ require("lazy").setup({
     'jwu/vim-better-whitespace',
     init = function()
       vim.g.better_whitespace_guicolor = 'darkred'
-      -- NOTE: we do this in s:fmt_file()
-      -- nnoremap <unique> <leader>w :StripWhitespace<CR>
     end,
   },
 
