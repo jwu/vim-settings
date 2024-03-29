@@ -176,7 +176,7 @@ local function MyDiff()
 end
 
 _G.MyDiff = MyDiff
-vim.opt.diffexpr = "luaeval('MyDiff()')"
+vim.opt.diffexpr = 'luaeval("MyDiff()")'
 
 vim.opt.cindent = true -- set cindent on to autoinent when editing c/c++ file
 vim.opt.shiftwidth = 2 -- 2 shift width
@@ -287,7 +287,7 @@ vim.keymap.set('n', '<leader>sw', '"_yiw:s/(%#w+)(W+)(w+)/321/<cr><c-o>', { nore
 -- Desc: Only do this part when compiled with support for autocommands.
 --------------------------------------------------------------------
 
-local ex_group = vim.api.nvim_create_augroup("ex", { clear = true })
+local ex_group = vim.api.nvim_create_augroup('ex', { clear = true })
 
 -- when editing a file, always jump to the last known cursor position.
 -- don't do it when the position is invalid or when inside an event handler
@@ -427,20 +427,20 @@ vim.api.nvim_create_autocmd({'FileType'}, {
 -- Plugs
 -- /////////////////////////////////////////////////////////////////////////////
 
-local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
+local lazypath = vim.fn.stdpath('data') .. '/lazy/lazy.nvim'
 if not vim.loop.fs_stat(lazypath) then
   vim.fn.system({
-    "git",
-    "clone",
-    "--filter=blob:none",
-    "https://github.com/folke/lazy.nvim.git",
-    "--branch=stable", -- latest stable release
+    'git',
+    'clone',
+    '--filter=blob:none',
+    'https://github.com/folke/lazy.nvim.git',
+    '--branch=stable', -- latest stable release
     lazypath,
   })
 end
 vim.opt.rtp:prepend(lazypath)
 
-require("lazy").setup({
+require('lazy').setup({
   ------------------------------
   -- color theme
   ------------------------------
@@ -473,14 +473,14 @@ require("lazy").setup({
         colors = {},
         highlights = {
           -- exvim/ex-easyhl
-          ["EX_HL_label1"] = { bg = 'darkred'},
-          ["EX_HL_label2"] = { bg = 'darkmagenta'},
-          ["EX_HL_label3"] = { bg = 'darkblue'},
-          ["EX_HL_label4"] = { bg = 'darkgreen'},
+          ['EX_HL_label1'] = { bg = 'darkred'},
+          ['EX_HL_label2'] = { bg = 'darkmagenta'},
+          ['EX_HL_label3'] = { bg = 'darkblue'},
+          ['EX_HL_label4'] = { bg = 'darkgreen'},
 
           -- 'exvim/ex-showmarks'
-          ["ShowMarksHLl"] = { bg = 'slateblue', fmt = 'none' },
-          ["ShowMarksHLu"] = { fg = 'darkred', bg = 'lightred', fmt = 'bold' },
+          ['ShowMarksHLl'] = { bg = 'slateblue', fmt = 'none' },
+          ['ShowMarksHLu'] = { fg = 'darkred', bg = 'lightred', fmt = 'bold' },
         },
 
         -- Plugins Config --
@@ -598,13 +598,13 @@ require("lazy").setup({
       require('gitsigns').setup {
         update_debounce = 100,
       }
-      require("scrollbar.handlers.gitsigns").setup()
+      require('scrollbar.handlers.gitsigns').setup()
 
-      require("scrollbar.handlers.search").setup {
+      require('scrollbar.handlers.search').setup {
         override_lens = function() end, -- leave only search marks and disable virtual text
       }
 
-      require("scrollbar").setup {
+      require('scrollbar').setup {
         show = true,
         show_in_active_only = false,
         set_highlights = true,
@@ -613,58 +613,58 @@ require("lazy").setup({
         hide_if_all_visible = false, -- Hides everything if all lines are visible
         throttle_ms = 100,
         handle = {
-          text = " ",
+          text = ' ',
           blend = 30, -- Integer between 0 and 100. 0 for fully opaque and 100 to full transparent. Defaults to 30.
           color = nil,
           color_nr = nil, -- cterm
-          highlight = "Tabline",
+          highlight = 'Tabline',
           hide_if_all_visible = true, -- Hides handle if all lines are visible
         },
         marks = {
           Cursor = {
-            text = "•",
+            text = '•',
             priority = 0,
             gui = nil,
             color = nil,
             cterm = nil,
             color_nr = nil, -- cterm
-            highlight = "Normal",
+            highlight = 'Normal',
           },
           Search = {
-            text = { "-", "=" },
+            text = { '-', '=' },
             priority = 1,
             gui = nil,
             color = nil,
             cterm = nil,
             color_nr = nil, -- cterm
-            highlight = "Type",
+            highlight = 'Type',
           },
           GitAdd = {
-            text = "┆",
+            text = '┆',
             priority = 7,
             gui = nil,
             color = nil,
             cterm = nil,
             color_nr = nil, -- cterm
-            highlight = "GitSignsAdd",
+            highlight = 'GitSignsAdd',
           },
           GitChange = {
-            text = "┆",
+            text = '┆',
             priority = 7,
             gui = nil,
             color = nil,
             cterm = nil,
             color_nr = nil, -- cterm
-            highlight = "GitSignsChange",
+            highlight = 'GitSignsChange',
           },
           GitDelete = {
-            text = "▁",
+            text = '▁',
             priority = 7,
             gui = nil,
             color = nil,
             cterm = nil,
             color_nr = nil, -- cterm
-            highlight = "GitSignsDelete",
+            highlight = 'GitSignsDelete',
           },
         },
         handlers = {
@@ -682,25 +682,25 @@ require("lazy").setup({
   {
     'lukas-reineke/indent-blankline.nvim',
     config = function()
-      require("ibl").setup {
+      require('ibl').setup {
         indent = {
-          char = "▏",
-          tab_char = "▏",
+          char = '▏',
+          tab_char = '▏',
         },
         scope = { enabled = false },
         exclude = {
           filetypes = {
-            "help",
-            "alpha",
-            "dashboard",
-            "neo-tree",
-            "Trouble",
-            "trouble",
-            "lazy",
-            "mason",
-            "notify",
-            "toggleterm",
-            "lazyterm",
+            'help',
+            'alpha',
+            'dashboard',
+            'neo-tree',
+            'Trouble',
+            'trouble',
+            'lazy',
+            'mason',
+            'notify',
+            'toggleterm',
+            'lazyterm',
           },
         },
       }
@@ -712,7 +712,7 @@ require("lazy").setup({
     config = function()
       local mini_is = require('mini.indentscope')
       mini_is.setup {
-        symbol = "▏",
+        symbol = '▏',
         draw = {
           delay = 100,
           animation = mini_is.gen_animation.none(),
@@ -760,16 +760,17 @@ require("lazy").setup({
 
   {
     'nvim-treesitter/nvim-treesitter',
-    build = ":TSUpdate",
+    enabled = true,
+    build = ':TSUpdate',
     config = function()
       require('nvim-treesitter.configs').setup {
         ensure_installed = {
-          "c", "cpp", "c_sharp", "rust", "go",
-          "python", "lua", "javascript", "typescript", "vim",
-          "css", "hlsl", "glsl", "wgsl",
-          "json", "toml", "yaml", "xml", "html",
-          "vimdoc", "markdown", "markdown_inline",
-          "diff", "query",
+          'c', 'cpp', 'c_sharp', 'rust', 'go',
+          'python', 'lua', 'javascript', 'typescript', 'vim',
+          'css', 'hlsl', 'glsl', 'wgsl',
+          'json', 'toml', 'yaml', 'xml', 'html',
+          'vimdoc', 'markdown', 'markdown_inline',
+          'diff', 'query',
         },
         sync_install = false,
         auto_install = false,
@@ -831,7 +832,7 @@ require("lazy").setup({
           end, { 'i', 's', 'c' }),
 
           -- Tab
-          ["<Tab>"] = cmp.mapping(function(fallback)
+          ['<Tab>'] = cmp.mapping(function(fallback)
             -- This little snippet will confirm with tab, and if no entry is selected, will confirm the first item
             if cmp.visible() then
               local entry = cmp.get_selected_entry()
@@ -919,9 +920,11 @@ require("lazy").setup({
       }
       lspconfig.omnisharp.setup {
         capabilities = capabilities,
-        root_dir = function ()
-          return vim.loop.cwd()
-        end,
+
+        -- DELME: no need
+        -- root_dir = function ()
+        --   return vim.loop.cwd()
+        -- end,
       }
 
       -- Use LspAttach autocommand to only map the following keys
@@ -985,7 +988,7 @@ require("lazy").setup({
       --   },
       --   pickers = {
       --     find_files = {
-      --       theme = "dropdown",
+      --       theme = 'dropdown',
       --     }
       --   },
       --   extensions = {
@@ -1004,8 +1007,8 @@ require("lazy").setup({
       vim.g.loaded_netrwPlugin = 1
       vim.opt.termguicolors = true
 
-      require("nvim-tree").setup {
-        sort_by = "case_sensitive",
+      require('nvim-tree').setup {
+        sort_by = 'case_sensitive',
         view = {
           width = 30,
         },
@@ -1086,13 +1089,15 @@ require("lazy").setup({
   ------------------------------
 
   -- rust
-  {
-    'simrat39/rust-tools.nvim',
-    config = function()
-      local rt = require('rust-tools')
 
-      rt.setup {}
-      rt.inlay_hints.enable()
-    end,
-  },
+  -- TODO: slow and sometimes stunning
+  -- {
+  --   'simrat39/rust-tools.nvim',
+  --   config = function()
+  --     local rt = require('rust-tools')
+
+  --     rt.setup {}
+  --     rt.inlay_hints.enable()
+  --   end,
+  -- },
 })
