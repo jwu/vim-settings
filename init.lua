@@ -971,29 +971,35 @@ require('lazy').setup({
       'nvim-lua/plenary.nvim'
     },
     config = function()
+      local telescope = require('telescope')
       local builtin = require('telescope.builtin')
       local themes = require('telescope.themes')
+
+      telescope.setup {
+        defaults = {
+          file_ignore_patterns = {
+            "**/*.meta",
+            "^[Bb]uild\\",
+            "^[Ll]ibrary\\",
+            "^[Ll]ogs\\",
+            "^[Oo]bj\\",
+            "^[Tt]emp\\",
+          }
+        }
+      }
+
       local function find_files()
-        builtin.find_files(themes.get_dropdown())
+        builtin.find_files(themes.get_dropdown({
+          hidden = false,
+          no_ignore = true,
+          no_ignore_parent = false,
+        }))
       end
 
       vim.keymap.set('n', '<C-p>', find_files, {})
       -- vim.keymap.set('n', '<leader>fg', builtin.live_grep, {})
       -- vim.keymap.set('n', '<leader>fb', builtin.buffers, {})
       -- vim.keymap.set('n', '<leader>fh', builtin.help_tags, {})
-
-      -- TODO:
-      -- require('telescope').setup {
-      --   defaults = {
-      --   },
-      --   pickers = {
-      --     find_files = {
-      --       theme = 'dropdown',
-      --     }
-      --   },
-      --   extensions = {
-      --   }
-      -- }
     end
   },
 
