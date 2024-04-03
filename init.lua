@@ -145,6 +145,8 @@ vim.opt.columns = 130
 vim.opt.showfulltag = true -- show tag with function protype.
 vim.opt.signcolumn = 'auto'
 
+vim.opt.mousemoveevent = true
+
 -- disable menu, toolbar and scrollbar
 -- vim.opt.guioptions = vim.opt.guioptions - 'm' -- disable Menu
 -- vim.opt.guioptions = vim.opt.guioptions - 'T' -- disalbe Toolbar
@@ -536,6 +538,56 @@ require('lazy').setup({
   -- visual enhancement
   ------------------------------
 
+  -- TODO: always_show_bufferline in exvim init
+  {
+    'akinsho/bufferline.nvim',
+    dependencies = { 'nvim-tree/nvim-web-devicons' },
+    config = function()
+      local bufferline = require('bufferline')
+
+      bufferline.setup {
+        highlights = {
+          buffer_selected = {
+            bold = true,
+            italic = false,
+          },
+        },
+        options = {
+          mode = 'buffers',
+          style_preset = bufferline.style_preset.default,
+          themable = true,
+          separator_style = 'thick',
+          always_show_bufferline = false,
+          hover = {
+            enabled = true,
+            delay = 100,
+            reveal = {'close'}
+          },
+          offsets = {
+            {
+              filetype = 'NvimTree',
+              text = function()
+                return vim.fn.getcwd()
+              end,
+              highlight = 'Directory',
+              separator = true,
+              text_align = 'left',
+            },
+            {
+              filetype = 'exproject',
+              text = function()
+                return vim.fn.getcwd()
+              end,
+              highlight = 'Directory',
+              separator = true,
+              text_align = 'left',
+            }
+          }
+        },
+      }
+    end,
+  },
+
   {
     'nvim-lualine/lualine.nvim',
     dependencies = { 'nvim-tree/nvim-web-devicons' },
@@ -744,6 +796,42 @@ require('lazy').setup({
     end,
   },
 
+  {
+    'folke/todo-comments.nvim',
+    dependencies = { 'nvim-lua/plenary.nvim' },
+    opts = {
+      signs = false,
+      sign_priority = 8,
+      keywords = {
+        FIX  = { icon = ' ', color = 'error', alt = { 'FIXME', 'BUG', 'FIXIT', 'ISSUE' }, },
+        DEL  = { icon = ' ', color = 'error', alt = { 'DELME' }, },
+        TODO = { icon = ' ', color = 'info' },
+        NOTE = { icon = ' ', color = 'hint', alt = { 'INFO' } },
+        HACK = { icon = ' ', color = 'warning' },
+        WARN = { icon = ' ', color = 'warning', alt = { 'WARNING', 'XXX' } },
+        TEST = { icon = '⏲ ', color = 'test', alt = { 'TESTME', 'TESTING', 'PASSED', 'FAILED' } },
+        PERF = { icon = ' ', alt = { 'OPTIM', 'PERFORMANCE', 'OPTIMIZE' } },
+      },
+      gui_style = {
+        fg = 'NONE',
+        bg = 'BOLD',
+      },
+      merge_keywords = true,
+      highlight = {
+        multiline = false,
+        multiline_pattern = '^.',
+        multiline_context = 10,
+        before = '',
+        keyword = 'bg',
+        after = '',
+        pattern = [[.*<(KEYWORDS)\s*:]],
+        comments_only = true,
+        max_line_len = 400,
+        exclude = {},
+      },
+    }
+  },
+
   -- TODO: config it
   -- {
   --   'RRethy/vim-illuminate',
@@ -888,9 +976,6 @@ require('lazy').setup({
     end,
   },
 
-  -- TODO: delme
-  -- 'exvim/ex-autocomplpop',
-
   ------------------------------
   -- lsp
   ------------------------------
@@ -920,11 +1005,6 @@ require('lazy').setup({
       }
       lspconfig.omnisharp.setup {
         capabilities = capabilities,
-
-        -- DELME: no need
-        -- root_dir = function ()
-        --   return vim.loop.cwd()
-        -- end,
       }
 
       -- Use LspAttach autocommand to only map the following keys
@@ -978,12 +1058,12 @@ require('lazy').setup({
       telescope.setup {
         defaults = {
           file_ignore_patterns = {
-            "**/*.meta",
-            "^[Bb]uild\\",
-            "^[Ll]ibrary\\",
-            "^[Ll]ogs\\",
-            "^[Oo]bj\\",
-            "^[Tt]emp\\",
+            '**/*.meta',
+            '^[Bb]uild\\',
+            '^[Ll]ibrary\\',
+            '^[Ll]ogs\\',
+            '^[Oo]bj\\',
+            '^[Tt]emp\\',
           }
         }
       }
@@ -1095,15 +1175,11 @@ require('lazy').setup({
   ------------------------------
 
   -- rust
-
-  -- TODO: slow and sometimes stunning
+  -- TODO:
   -- {
-  --   'simrat39/rust-tools.nvim',
-  --   config = function()
-  --     local rt = require('rust-tools')
+  --   'mrcjkb/rustaceanvim',
+  --   version = '^4', -- Recommended
+  --   ft = { 'rust' },
+  -- }
 
-  --     rt.setup {}
-  --     rt.inlay_hints.enable()
-  --   end,
-  -- },
 })
