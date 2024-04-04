@@ -554,12 +554,16 @@ require('lazy').setup({
   -- visual enhancement
   ------------------------------
 
-  -- TODO: always_show_bufferline in exvim init
   {
     'akinsho/bufferline.nvim',
     dependencies = { 'nvim-tree/nvim-web-devicons' },
     config = function()
       local bufferline = require('bufferline')
+
+      _G.show_bufferline = function()
+        local config = require('bufferline.config')
+        config.options.always_show_bufferline = true
+      end
 
       bufferline.setup {
         highlights = {
@@ -611,6 +615,12 @@ require('lazy').setup({
       local function lineinfo()
         return "%p%% %l:%v %{line('$')}"
       end
+      local function projectinfo()
+        return 'Project'
+      end
+      local function searchinfo()
+        return 'Search Results'
+      end
 
       require('lualine').setup {
         options = {
@@ -651,7 +661,30 @@ require('lazy').setup({
         tabline = {},
         winbar = {},
         inactive_winbar = {},
-        extensions = {}
+        extensions = {
+          {
+            filetypes = {'exproject', 'NvimTree'},
+            sections = {
+              lualine_a = {projectinfo},
+              lualine_b = {'progress'},
+              lualine_c = {'location'},
+              lualine_x = {},
+              lualine_y = {},
+              lualine_z = {}
+            }
+          },
+          {
+            filetypes = {'exsearch'},
+            sections = {
+              lualine_a = {searchinfo},
+              lualine_b = {'progress'},
+              lualine_c = {'location'},
+              lualine_x = {},
+              lualine_y = {},
+              lualine_z = {}
+            }
+          },
+        }
       }
     end,
   },
