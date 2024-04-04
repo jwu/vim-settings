@@ -154,6 +154,12 @@ vim.opt.mousemoveevent = true
 -- vim.opt.guioptions = vim.opt.guioptions - 'l' -- disalbe the left scrollbar
 -- vim.opt.guioptions = vim.opt.guioptions - 'L' -- disalbe the left scrollbar when the longest visible line exceed the window
 
+local signs = { Error = " ", Warn = " ", Hint = " ", Info = " " }
+for type, icon in pairs(signs) do
+  local hl = 'DiagnosticSign' .. type
+  vim.fn.sign_define(hl, { text = icon, texthl = hl, linehl = none, numhl = none })
+end
+
 --------------------------------------------------------------------
 -- Desc: Text edit
 --------------------------------------------------------------------
@@ -802,6 +808,7 @@ require('lazy').setup({
             'notify',
             'toggleterm',
             'lazyterm',
+            'exproject',
           },
         },
       }
@@ -1049,10 +1056,16 @@ require('lazy').setup({
       local lspconfig = require('lspconfig')
       local capabilities = require('cmp_nvim_lsp').default_capabilities()
 
-      lspconfig.rust_analyzer.setup {
+      lspconfig.clangd.setup {
         capabilities = capabilities,
       }
       lspconfig.omnisharp.setup {
+        capabilities = capabilities,
+      }
+      lspconfig.rust_analyzer.setup {
+        capabilities = capabilities,
+      }
+      lspconfig.lua_ls.setup {
         capabilities = capabilities,
       }
 
@@ -1104,6 +1117,7 @@ require('lazy').setup({
       local builtin = require('telescope.builtin')
       local themes = require('telescope.themes')
 
+      -- TODO: support other platform
       telescope.setup {
         defaults = {
           file_ignore_patterns = {
