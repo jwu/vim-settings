@@ -503,7 +503,23 @@ require('lazy').setup({
   {
     'jwu/exvim-lite',
     config = function()
+      local function is_nvim_tree_open()
+        for _, win in ipairs(vim.api.nvim_list_wins()) do
+          local bufnr = vim.api.nvim_win_get_buf(win)
+          local filetype = vim.api.nvim_buf_get_option(bufnr, 'filetype')
+          if filetype == 'NvimTree' then
+            return true
+          end
+        end
+        return false
+      end
+
       local function find_file()
+        if is_nvim_tree_open() then
+          vim.cmd('NvimTreeFindFile')
+          return
+        end
+
         vim.cmd('EXProjectFind')
       end
 
@@ -1093,10 +1109,29 @@ require('lazy').setup({
       vim.g.loaded_netrwPlugin = 1
       vim.opt.termguicolors = true
 
+      local view = require('nvim-tree.view')
+      local win_size = 30
+      local win_size_zoom = 60
+
+      local function toggle_zoom()
+        local winnr = view.get_winnr()
+        local cur_size = vim.api.nvim_win_get_width(winnr)
+
+        if cur_size == win_size then
+          view.resize(win_size_zoom)
+        elseif cur_size == win_size_zoom then
+          view.resize(win_size)
+        elseif cur_size > win_size_zoom then
+          view.resize(win_size_zoom)
+        else
+          view.resize(win_size)
+        end
+      end
+
       require('nvim-tree').setup {
         sort_by = 'case_sensitive',
         view = {
-          width = 30,
+          width = win_size,
         },
         renderer = {
           group_empty = true,
@@ -1107,6 +1142,20 @@ require('lazy').setup({
         filters = {
           dotfiles = true,
         },
+        on_attach = function(bufnr)
+          local api = require('nvim-tree.api')
+
+          local function opts(desc)
+            return { desc = 'nvim-tree: ' .. desc, buffer = bufnr, noremap = true, silent = true, nowait = true }
+          end
+
+          -- default mappings
+          api.config.mappings.default_on_attach(bufnr)
+
+          -- custom mappings
+          vim.keymap.set('n', '<F1>',    api.tree.toggle_help, opts('Help'))
+          vim.keymap.set('n', '<Space>', toggle_zoom, opts('Resize window'))
+        end,
       }
     end
   },
