@@ -301,42 +301,42 @@ local ex_group = vim.api.nvim_create_augroup('ex', { clear = true })
 -- don't do it when the position is invalid or when inside an event handler
 -- (happens when dropping a file on gvim).
 vim.api.nvim_create_autocmd({'BufReadPost'}, {
+  group = ex_group,
   pattern = {'*'},
   callback = function()
     if vim.fn.line("'\"") > 0 and vim.fn.line("'\"") <= vim.fn.line("$") then
       vim.cmd('normal g`"')
     end
   end,
-  group = ex_group,
 })
 
 -- NOTE: ctags find the tags file from the current path instead of the path of currect file
 vim.api.nvim_create_autocmd({'BufNewFile', 'BufEnter'}, {
+  group = ex_group,
   pattern = {'*'},
   command = 'set cpoptions+=d',
-  group = ex_group,
 })
 
 -- ensure every file does syntax highlighting (full)
 vim.api.nvim_create_autocmd({'BufEnter'}, {
+  group = ex_group,
   pattern = {'*'},
   command = 'syntax sync fromstart',
-  group = ex_group,
 })
 vim.api.nvim_create_autocmd({'BufNewFile', 'BufRead'}, {
+  group = ex_group,
   pattern = {'*.hlsl', '*.shader', '*.cg', '*.cginc', '*.vs', '*.fs', '*.fx', '*.fxh', '*.vsh', '*.psh', '*.shd'},
   command = 'set ft=hlsl',
-  group = ex_group,
 })
 vim.api.nvim_create_autocmd({'BufNewFile', 'BufRead'}, {
+  group = ex_group,
   pattern = {'*.glsl'},
   command = 'set ft=glsl',
-  group = ex_group,
 })
 vim.api.nvim_create_autocmd({'BufNewFile', 'BufRead'}, {
+  group = ex_group,
   pattern = {'*.avs'},
   command = 'set syntax=avs',
-  group = ex_group,
 })
 
 --------------------------------------------------------------------
@@ -345,50 +345,51 @@ vim.api.nvim_create_autocmd({'BufNewFile', 'BufRead'}, {
 
 -- for all text files set 'textwidth' to 78 characters.
 vim.api.nvim_create_autocmd({'FileType'}, {
+  group = ex_group,
   pattern = {'text'},
   command = 'setlocal textwidth=78',
-  group = ex_group,
 })
 
 -- this will avoid bug in my project with namespace ex, the vim will tree ex:: as modeline.
 -- au FileType c,cpp,cs,swig set nomodeline
 vim.api.nvim_create_autocmd({'FileType'}, {
+  group = ex_group,
   pattern = {'c', 'cpp', 'cs', 'swig'},
   command = 'set nomodeline',
-  group = ex_group,
 })
 
 -- disable auto-comment for c/cpp, lua, javascript, c# and vim-script
 vim.api.nvim_create_autocmd({'FileType'}, {
+  group = ex_group,
   pattern = {'c', 'cpp', 'java', 'javascript'},
   command = [[set comments=sO:*\ -,mO:*\ \ ,exO:*/,s1:/*,mb:*,ex:*/,f://]],
-  group = ex_group,
 })
 vim.api.nvim_create_autocmd({'FileType'}, {
+  group = ex_group,
   pattern = {'cs'},
   command = [[set comments=sO:*\ -,mO:*\ \ ,exO:*/,s1:/*,mb:*,ex:*/,f:///,f://]],
-  group = ex_group,
 })
 vim.api.nvim_create_autocmd({'FileType'}, {
+  group = ex_group,
   pattern = {'vim'},
   command = [[set comments=sO:\"\ -,mO:\"\ \ ,eO:\"\",f:\"]],
-  group = ex_group,
 })
 vim.api.nvim_create_autocmd({'FileType'}, {
+  group = ex_group,
   pattern = {'lua'},
   command = [[set comments=f:--]],
-  group = ex_group,
 })
 
 -- disable automaticaly insert current comment leader after hitting <Enter>, 'o' or 'O'
 vim.api.nvim_create_autocmd({'FileType'}, {
+  group = ex_group,
   pattern = {'c', 'cpp', 'cs', 'rust'},
   command = 'set formatoptions-=ro',
-  group = ex_group,
 })
 
 -- if edit python scripts, check if have \t. (python said: the programme can only use \t or not, but can't use them together)
 vim.api.nvim_create_autocmd({'FileType'}, {
+  group = ex_group,
   pattern = {'python', 'coffee'},
   callback = function()
     local has_noexpandtab = vim.fn.search('^\t','wn')
@@ -428,7 +429,6 @@ vim.api.nvim_create_autocmd({'FileType'}, {
       -- we use original vim setting
     end
   end,
-  group = ex_group,
 })
 
 -- /////////////////////////////////////////////////////////////////////////////
@@ -533,6 +533,14 @@ require('lazy').setup({
         vim.cmd('StripWhitespace')
         print('whitespace striped!')
       end
+
+      vim.api.nvim_create_autocmd({'FileType'}, {
+        group = ex_group,
+        pattern = {'exproject', 'exsearch'},
+        callback = function()
+          vim.b.miniindentscope_disable = true
+        end,
+      })
 
       -- buffer operation
       vim.keymap.set('n', '<leader>bd', ':EXbd<CR>', { noremap = true, silent = true, unique = true })
