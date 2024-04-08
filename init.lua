@@ -1045,6 +1045,10 @@ require('lazy').setup({
   ------------------------------
 
   {
+    'github/copilot.vim',
+  },
+
+  {
     'neovim/nvim-lspconfig',
     dependencies = {
       'hrsh7th/cmp-nvim-lsp',
