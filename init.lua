@@ -1199,6 +1199,7 @@ require('lazy').setup({
           show_on_dirs = true,
         },
         filters = {
+          git_ignored = false,
           dotfiles = true,
         },
         on_attach = function(bufnr)
