@@ -551,7 +551,7 @@ require('lazy').setup({
 
       -- plugin<->edit window switch
       vim.keymap.set('n', '<leader><Tab>', ':EXsw<CR>', { noremap = true, silent = true, unique = true })
-      vim.keymap.set('n', '<leader><Esc>', ':EXgp<CR><ESC>', { silent = true, unique = true })
+      vim.keymap.set('n', '<leader><Esc>', ':EXgc<CR>', { noremap = true, silent = true, unique = true })
 
       -- search
       vim.keymap.set('n', '<leader>F', ':GS<space>', { noremap = true, unique = true })
