@@ -1079,6 +1079,13 @@ require('lazy').setup({
       }
       lspconfig.lua_ls.setup {
         capabilities = capabilities,
+        settings = {
+          Lua = {
+            diagnostics = {
+              globals = {'vim'},
+            },
+          },
+        },
       }
 
       -- Use LspAttach autocommand to only map the following keys
