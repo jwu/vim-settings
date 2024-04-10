@@ -1093,6 +1093,7 @@ require('lazy').setup({
           local opts = { noremap = true, silent = true, buffer = ev.buf }
           vim.keymap.set('n', '<leader>]', vim.lsp.buf.definition, opts)
           vim.keymap.set('n', '<leader>[', vim.lsp.buf.hover, opts)
+          -- TODO: vim.lsp.buf.references(nil, {on_list = on_list})
           vim.keymap.set('n', '<leader>gr', vim.lsp.buf.references, opts)
           vim.keymap.set('n', '<leader>gd', vim.lsp.buf.declaration, opts)
           vim.keymap.set('n', '<leader>gi', vim.lsp.buf.implementation, opts)
