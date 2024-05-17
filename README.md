@@ -38,6 +38,9 @@
 1. install [rg](https://github.com/BurntSushi/ripgrep)
 1. install `fonts`
 1. compile `nvim-treesitter` parsers
+1. install neovide to ubuntu desktop
+  1. `sudo desktop-file-install neovide.desktop`
+  1. `sudo update-desktop-database`
 
 ## refs
 
