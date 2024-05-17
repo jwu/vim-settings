@@ -1,0 +1,8 @@
+[Desktop Entry]
+Name=Neovide
+Comment=Neovim GUI
+Exec=env PATH=\~/bin:\~/.cargo/bin:\~/.local/bin:/usr/bin:/usr/local/bin:/opt/nvim-linux64/bin:\$PATH /usr/local/bin/neovide
+Icon=/home/jwu/.local/share/icons/neovide.svg
+Terminal=false
+Type=Application
+Categories=Utility;TextEditor;
