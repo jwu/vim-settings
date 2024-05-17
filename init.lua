@@ -60,7 +60,7 @@ if WINDOWS() then
 else
   -- set default encoding to utf-8
   vim.opt.encoding = 'utf-8'
-  vim.opt.termencoding = 'utf-8'
+  vim.opt.fileencoding = 'utf-8'
 end
 
 vim.scriptencoding = 'utf-8'
@@ -77,15 +77,15 @@ local backup_dir = data_dir .. 'backup'
 local swap_dir = data_dir .. 'swap'
 
 if vim.fn.finddir(data_dir) == '' then
-  vim.fn.mkdir(data_dir, 'p', 0700)
+  vim.fn.mkdir(data_dir, 'p', '0700')
 end
 
 if vim.fn.finddir(backup_dir) == '' then
-  vim.fn.mkdir(backup_dir, 'p', 0700)
+  vim.fn.mkdir(backup_dir, 'p', '0700')
 end
 
 if vim.fn.finddir(swap_dir) == '' then
-  vim.fn.mkdir(swap_dir, 'p', 0700)
+  vim.fn.mkdir(swap_dir, 'p', '0700')
 end
 
 vim.opt.backupdir = vim.env.HOME .. '/.data/backup' -- where to put backup file
@@ -140,8 +140,8 @@ vim.opt.titlestring = '%t (%{expand("%:p:h")})'
 
 -- set window size (if it's GUI)
 -- set window's width to 130 columns and height to 40 rows
-vim.opt.lines = 40
-vim.opt.columns = 130
+-- vim.opt.lines = 40
+-- vim.opt.columns = 130
 vim.opt.showfulltag = true -- show tag with function protype.
 vim.opt.signcolumn = 'auto'
 

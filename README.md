@@ -10,7 +10,7 @@
 1. install [omnisharp-roslyn](https://github.com/OmniSharp/omnisharp-roslyn)
   - Windows install: extract package in `c:\bin\omnisharp.win-x64\`
 
-## nvim + neovide
+## nvim + neovide (Windows)
 
 1. install [nvim](https://neovim.io/)
 1. install [neovide](https://neovide.dev/)
@@ -26,6 +26,18 @@
   1. Open `x64 Native Tools Command Prompt`
   1. Open `neovide`
   1. Wait until the compile finish
+
+## nvim + neovide (Linux)
+
+1. install [nvim](https://neovim.io/)
+1. install [neovide](https://neovide.dev/)
+  1. run it first
+1. cp `init.lua` to `~/.config/nvim`
+1. cp `config.toml` to `~/.config/neovide`
+1. install [lazy.nvim](https://github.com/folke/lazy.nvim)
+1. install [rg](https://github.com/BurntSushi/ripgrep)
+1. install `fonts`
+1. compile `nvim-treesitter` parsers
 
 ## refs
 
