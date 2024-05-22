@@ -157,7 +157,7 @@ vim.opt.mousemoveevent = true
 local signs = { Error = " ", Warn = " ", Hint = " ", Info = " " }
 for type, icon in pairs(signs) do
   local hl = 'DiagnosticSign' .. type
-  vim.fn.sign_define(hl, { text = icon, texthl = hl, linehl = none, numhl = none })
+  vim.fn.sign_define(hl, { text = icon, texthl = hl, linehl = nil, numhl = nil })
 end
 
 --------------------------------------------------------------------
@@ -626,9 +626,9 @@ require('lazy').setup({
     'nvim-lualine/lualine.nvim',
     dependencies = { 'nvim-tree/nvim-web-devicons' },
     config = function()
-      local function lineinfo()
-        return "%p%% %l:%v %{line('$')}"
-      end
+      -- local function lineinfo()
+      --   return "%p%% %l:%v %{line('$')}"
+      -- end
       local function projectinfo()
         return 'Project'
       end
@@ -970,14 +970,14 @@ require('lazy').setup({
           ['<C-f>'] = cmp.mapping.scroll_docs(4),
 
           -- next
-          ['<C-j>'] = cmp.mapping(function(fallback)
+          ['<C-j>'] = cmp.mapping(function()
             if cmp.visible() then
               cmp.select_next_item({ behavior = cmp.SelectBehavior.Select })
             end
           end, { 'i', 's', 'c' }),
 
           -- prev
-          ['<C-k>'] = cmp.mapping(function(fallback)
+          ['<C-k>'] = cmp.mapping(function()
             if cmp.visible() then
               cmp.select_prev_item({ behavior = cmp.SelectBehavior.Select })
             end
@@ -1060,7 +1060,7 @@ require('lazy').setup({
       require('mason-lspconfig').setup {
         ensure_installed = {
           'clangd', 'omnisharp', 'rust_analyzer',
-          'lua_ls',
+          'pyright', 'lua_ls',
         },
         automatic_installation = false,
       }
@@ -1075,6 +1075,9 @@ require('lazy').setup({
         capabilities = capabilities,
       }
       lspconfig.rust_analyzer.setup {
+        capabilities = capabilities,
+      }
+      lspconfig.pyright.setup {
         capabilities = capabilities,
       }
       lspconfig.lua_ls.setup {
