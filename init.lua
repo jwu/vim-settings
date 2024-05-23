@@ -44,10 +44,6 @@ end
 
 -- try to set encoding to utf-8
 if WINDOWS() then
-  -- Windows cmd.exe still uses cp850. If Windows ever moved to
-  -- Powershell as the primary terminal, this would be utf-8
-  vim.opt.termencoding = 'cp850'
-
   -- Let Vim use utf-8 internally, because many scripts require this
   vim.opt.encoding = 'utf-8'
   vim.g.fileencoding = 'utf-8'
@@ -114,12 +110,12 @@ vim.opt.wrap = false -- do not wrap text
 vim.opt.autochdir = false -- no autochchdir
 
 if WINDOWS() then
-  vim.opt.guifont = 'FuraMono Nerd Font:h11'
+  vim.opt.guifont = 'FiraMono Nerd Font:h11'
   vim.opt.guifontwide = 'Microsoft YaHei Mono:h11'
 elseif OSX() then
-  vim.opt.guifont = 'FuraMono Nerd Font:h13'
+  vim.opt.guifont = 'FiraMono Nerd Font:h13'
 else
-  vim.opt.guifont = 'FuraMono Nerd Font:h12'
+  vim.opt.guifont = 'FiraMono Nerd Font:h12'
 end
 
 --------------------------------------------------------------------
