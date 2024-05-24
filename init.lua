@@ -110,8 +110,8 @@ vim.opt.wrap = false -- do not wrap text
 vim.opt.autochdir = false -- no autochchdir
 
 if WINDOWS() then
-  vim.opt.guifont = 'FiraMono Nerd Font:h11'
-  vim.opt.guifontwide = 'Microsoft YaHei Mono:h11'
+  vim.opt.guifont = 'FiraMono Nerd Font:h12'
+  vim.opt.guifontwide = 'Microsoft YaHei Mono:h12'
 elseif OSX() then
   vim.opt.guifont = 'FiraMono Nerd Font:h13'
 else
