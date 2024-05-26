@@ -30,17 +30,20 @@
 ## nvim + neovide (Linux)
 
 1. install [nvim](https://neovim.io/)
+  1. `sudo cp -r nvim-linux64/bin/ /usr/`
+  1. `sudo cp -r nvim-linux64/lib/ /usr/`
+  1. `sudo cp -r nvim-linux64/share/ /usr/`
 1. install [neovide](https://neovide.dev/)
-  1. run it first
+  1. `sudo cp neovide-linux-x86_64/neovide /usr/bin/`
+  1. update ubuntu desktop
+    1. `sudo desktop-file-install neovide.desktop`
+    1. `sudo update-desktop-database`
 1. cp `init.lua` to `~/.config/nvim`
 1. cp `config.toml` to `~/.config/neovide`
 1. install [lazy.nvim](https://github.com/folke/lazy.nvim)
 1. install [rg](https://github.com/BurntSushi/ripgrep)
 1. install `fonts`
 1. compile `nvim-treesitter` parsers
-1. install neovide to ubuntu desktop
-  1. `sudo desktop-file-install neovide.desktop`
-  1. `sudo update-desktop-database`
 
 ## refs
 
