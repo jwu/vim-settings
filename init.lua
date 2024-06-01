@@ -1038,6 +1038,10 @@ require('lazy').setup({
     end,
   },
 
+  -- NOTE: Use this instead of  nvim-cmp cmdline({ '/', '?' }, ...)
+  -- NOTE: nvim-cmp will random jump cursor when working with ex-gsearch window
+  'exvim/ex-searchcompl',
+
   ------------------------------
   -- lsp
   ------------------------------
