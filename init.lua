@@ -1070,19 +1070,19 @@ require('lazy').setup({
       local lspconfig = require('lspconfig')
       local capabilities = require('cmp_nvim_lsp').default_capabilities()
 
-      lspconfig.clangd.setup {
+      vim.lsp.config('clangd', {
         capabilities = capabilities,
-      }
-      lspconfig.omnisharp.setup {
+      })
+      vim.lsp.config('omnisharp', {
         capabilities = capabilities,
-      }
-      lspconfig.rust_analyzer.setup {
+      })
+      vim.lsp.config('rust_analyzer', {
         capabilities = capabilities,
-      }
-      lspconfig.pyright.setup {
+      })
+      vim.lsp.config('pyright', {
         capabilities = capabilities,
-      }
-      lspconfig.lua_ls.setup {
+      })
+      vim.lsp.config('lua_ls', {
         capabilities = capabilities,
         settings = {
           Lua = {
@@ -1091,7 +1091,7 @@ require('lazy').setup({
             },
           },
         },
-      }
+      })
 
       -- Use LspAttach autocommand to only map the following keys
       -- after the language server attaches to the current buffer
