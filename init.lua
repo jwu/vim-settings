@@ -1063,7 +1063,6 @@ require('lazy').setup({
         automatic_installation = false,
       }
 
-      local lspconfig = require('lspconfig')
       local capabilities = require('cmp_nvim_lsp').default_capabilities()
 
       vim.lsp.config('clangd', {
@@ -1286,7 +1285,6 @@ require('lazy').setup({
   ------------------------------
 
   'sindrets/diffview.nvim',
-  'tpope/vim-fugitive',
 
   ------------------------------
   -- language tools
