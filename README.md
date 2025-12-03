@@ -25,6 +25,7 @@
   1. Install [Visual Studio Build Tools](https://visualstudio.microsoft.com/zh-hans/downloads/?q=build+tools+for+visual+studio)
   1. Open `x64 Native Tools Command Prompt`
   1. Open `neovide`
+  1. Type `:TSUpdate`
   1. Wait until the compile finish
 
 ## nvim + neovide (Linux)

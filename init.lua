@@ -297,12 +297,14 @@ local ex_group = vim.api.nvim_create_augroup('ex', { clear = true })
 -- when editing a file, always jump to the last known cursor position.
 -- don't do it when the position is invalid or when inside an event handler
 -- (happens when dropping a file on gvim).
-vim.api.nvim_create_autocmd({'BufReadPost'}, {
+vim.api.nvim_create_autocmd('BufReadPost', {
   group = ex_group,
   pattern = {'*'},
   callback = function()
-    if vim.fn.line("'\"") > 0 and vim.fn.line("'\"") <= vim.fn.line("$") then
-      vim.cmd('normal g`"')
+    local mark = vim.api.nvim_buf_get_mark(0, '"')
+    local lcount = vim.api.nvim_buf_line_count(0)
+    if mark[1] > 0 and mark[1] <= lcount then
+      pcall(vim.api.nvim_win_set_cursor, 0, mark)
     end
   end,
 })
@@ -918,7 +920,7 @@ require('lazy').setup({
           'python', 'lua', 'javascript', 'typescript', 'vim',
           'css', 'hlsl', 'glsl', 'wgsl',
           'json', 'toml', 'yaml', 'xml', 'html',
-          'vimdoc', 'markdown', 'markdown_inline',
+          'luadoc', 'vimdoc', 'markdown', 'markdown_inline',
           'diff', 'query',
         },
         sync_install = false,
