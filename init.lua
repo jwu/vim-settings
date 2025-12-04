@@ -11,15 +11,15 @@ vim.g.neovide_no_idle = true
 vim.g.neovide_cursor_animation_length = 0.0
 
 local function OSX()
-  return vim.loop.os_uname().sysname == 'Darwin'
+  return vim.uv.os_uname().sysname == 'Darwin'
 end
 
 local function LINUX()
-  return vim.loop.os_uname().sysname == 'Linux'
+  return vim.uv.os_uname().sysname == 'Linux'
 end
 
 local function WINDOWS()
-  return vim.loop.os_uname().sysname == 'Windows_NT'
+  return vim.uv.os_uname().sysname == 'Windows_NT'
 end
 
 _G.OSX = OSX
@@ -47,7 +47,7 @@ end
 if WINDOWS() then
   -- Let Vim use utf-8 internally, because many scripts require this
   vim.opt.encoding = 'utf-8'
-  vim.g.fileencoding = 'utf-8'
+  vim.bo.fileencoding = 'utf-8'
 
   -- Windows has traditionally used cp1252, so it's probably wise to
   -- fallback into cp1252 instead of eg. iso-8859-15.
@@ -151,11 +151,22 @@ vim.opt.mousemoveevent = true
 -- vim.opt.guioptions = vim.opt.guioptions - 'l' -- disalbe the left scrollbar
 -- vim.opt.guioptions = vim.opt.guioptions - 'L' -- disalbe the left scrollbar when the longest visible line exceed the window
 
-local signs = { Error = " ", Warn = " ", Hint = " ", Info = " " }
-for type, icon in pairs(signs) do
-  local hl = 'DiagnosticSign' .. type
-  vim.fn.sign_define(hl, { text = icon, texthl = hl, linehl = nil, numhl = nil })
-end
+-- diagnostic
+vim.diagnostic.config({
+  underline = true,
+  virtual_text = true,
+  virtual_lines = false,
+  update_in_insert = false,
+  severity_sort = true,
+  signs = {
+    text = {
+      [vim.diagnostic.severity.ERROR] = " ",
+      [vim.diagnostic.severity.WARN] = " ",
+      [vim.diagnostic.severity.INFO] = " ",
+      [vim.diagnostic.severity.HINT] = " ",
+    }
+  }
+})
 
 --------------------------------------------------------------------
 -- Desc: Text edit
@@ -401,7 +412,7 @@ vim.api.nvim_create_autocmd({'FileType'}, {
         '2. noexpand (tab=\t, currently have risk)',
         '3. do nothing (I will handle it by myself)'
       })
-      local tab_space = vim.fn.printf('%*s',vim.o.tabstop,'')
+      local tab_space = vim.fn.printf('%*s',vim.o.tabstop)
       if idx == 1 then
         has_noexpandtab = 0
         has_expandtab = 1
@@ -435,7 +446,7 @@ vim.api.nvim_create_autocmd({'FileType'}, {
 -- /////////////////////////////////////////////////////////////////////////////
 
 local lazypath = vim.fn.stdpath('data') .. '/lazy/lazy.nvim'
-if not vim.loop.fs_stat(lazypath) then
+if not vim.uv.fs_stat(lazypath) then
   vim.fn.system({
     'git',
     'clone',
@@ -1047,24 +1058,12 @@ require('lazy').setup({
   ------------------------------
   -- lsp
   ------------------------------
-
   {
     'neovim/nvim-lspconfig',
     dependencies = {
       'hrsh7th/cmp-nvim-lsp',
-      'williamboman/mason.nvim',
-      'williamboman/mason-lspconfig.nvim',
     },
     config = function()
-      require('mason').setup()
-      require('mason-lspconfig').setup {
-        ensure_installed = {
-          'clangd', 'omnisharp', 'rust_analyzer',
-          'pyright', 'lua_ls',
-        },
-        automatic_installation = false,
-      }
-
       local capabilities = require('cmp_nvim_lsp').default_capabilities()
 
       vim.lsp.config('clangd', {
@@ -1081,13 +1080,49 @@ require('lazy').setup({
       })
       vim.lsp.config('lua_ls', {
         capabilities = capabilities,
-        settings = {
-          Lua = {
-            diagnostics = {
-              globals = {'vim'},
-            },
-          },
-        },
+        on_init = function(client)
+          if client.workspace_folders then
+            local path = client.workspace_folders[1].name
+            if
+              path ~= vim.fn.stdpath('config')
+              and (vim.uv.fs_stat(path .. '/.luarc.json') or vim.uv.fs_stat(path .. '/.luarc.jsonc'))
+              then
+                return
+              end
+            end
+
+            client.config.settings.Lua = vim.tbl_deep_extend('force', client.config.settings.Lua, {
+              runtime = {
+                -- Tell the language server which version of Lua you're using (most
+                -- likely LuaJIT in the case of Neovim)
+                version = 'LuaJIT',
+                -- Tell the language server how to find Lua modules same way as Neovim
+                -- (see `:h lua-module-load`)
+                path = {
+                  'lua/?.lua',
+                  'lua/?/init.lua',
+                },
+              },
+              -- Make the server aware of Neovim runtime files
+              workspace = {
+                checkThirdParty = false,
+                library = {
+                  vim.env.VIMRUNTIME
+                  -- Depending on the usage, you might want to add additional paths
+                  -- here.
+                  -- '${3rd}/luv/library'
+                  -- '${3rd}/busted/library'
+                }
+              }
+            })
+          end,
+          settings = {
+            Lua = {
+              diagnostics = {
+                globals = {'vim'},
+              },
+            }
+          }
       })
 
       -- Use LspAttach autocommand to only map the following keys
@@ -1120,6 +1155,25 @@ require('lazy').setup({
         end,
       })
     end,
+  },
+
+  {
+    "mason-org/mason-lspconfig.nvim",
+    dependencies = {
+      { "mason-org/mason.nvim", opts = {} },
+      "neovim/nvim-lspconfig",
+    },
+    opts = {
+      ensure_installed = {
+        'clangd',
+        'omnisharp',
+        'rust_analyzer',
+        'lua_ls',
+        'pyright',
+      },
+      automatic_installation = false,
+      automatic_enable = true,
+    },
   },
 
   -- TODO: https://github.com/mfussenegger/nvim-lint
