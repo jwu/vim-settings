@@ -16,9 +16,9 @@ if vim.g.neovide then
   vim.g.neovide_underline_stroke_scale = 1.0
 
   -- animation
-  vim.g.neovide_position_animation_length = 0.15
-  vim.g.neovide_scroll_animation_length = 0.15
-  vim.g.neovide_scroll_animation_far_lines = 0.15
+  vim.g.neovide_position_animation_length = 0.0
+  vim.g.neovide_scroll_animation_length = 0.0
+  vim.g.neovide_scroll_animation_far_lines = 0.0
   vim.g.neovide_cursor_animation_length = 0.0
   vim.g.neovide_cursor_short_animation_length = 0.0
   vim.g.neovide_cursor_trail_size = 0.0
@@ -590,7 +590,7 @@ require('lazy').setup({
       local function is_nvim_tree_open()
         for _, win in ipairs(vim.api.nvim_list_wins()) do
           local bufnr = vim.api.nvim_win_get_buf(win)
-          local filetype = vim.api.nvim_buf_get_option(bufnr, 'filetype')
+          local filetype = vim.api.nvim_buf_get_option_value(bufnr, 'filetype')
           if filetype == 'NvimTree' then
             return true
           end
@@ -1126,6 +1126,7 @@ require('lazy').setup({
   ------------------------------
   -- lsp
   ------------------------------
+
   {
     'neovim/nvim-lspconfig',
     dependencies = {
@@ -1188,6 +1189,7 @@ require('lazy').setup({
             Lua = {
               diagnostics = {
                 globals = {'vim'},
+                disable = {'missing-fields'}
               },
             }
           }
@@ -1241,6 +1243,18 @@ require('lazy').setup({
       },
       automatic_installation = false,
       automatic_enable = true,
+    },
+  },
+
+  {
+    "folke/lazydev.nvim",
+    ft = "lua", -- only load on lua files
+    opts = {
+      library = {
+        -- See the configuration section for more details
+        -- Load luvit types when the `vim.uv` word is found
+        { path = "${3rd}/luv/library", words = { "vim%.uv" } },
+      },
     },
   },
 
@@ -1305,8 +1319,8 @@ require('lazy').setup({
       local win_size_zoom = 60
 
       local function toggle_zoom()
-        local winnr = view.get_winnr()
-        local cur_size = vim.api.nvim_win_get_width(winnr)
+        local win = view.get_winnr() or 0
+        local cur_size = vim.api.nvim_win_get_width(win)
 
         if cur_size == win_size then
           view.resize(win_size_zoom)
