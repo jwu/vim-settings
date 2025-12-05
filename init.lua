@@ -2,13 +2,57 @@
 -- basic
 -- /////////////////////////////////////////////////////////////////////////////
 
-vim.g.neovide_scale_factor = 1.0 -- NOTE: adjust by your system font scale factor
-vim.g.neovide_scroll_animation_length = 0.0
-vim.g.neovide_hide_mouse_when_typing = true
-vim.g.neovide_refresh_rate = 60
-vim.g.neovide_refresh_rate_idle = 60
-vim.g.neovide_no_idle = true
-vim.g.neovide_cursor_animation_length = 0.0
+-- neovide settings
+if vim.g.neovide then
+  -- rendering
+  vim.g.neovide_no_idle = true
+  vim.g.neovide_refresh_rate = 60
+  vim.g.neovide_refresh_rate_idle = 60
+
+  -- text rendering
+  vim.g.neovide_scale_factor = 1.0 -- NOTE: adjust by your system font scale factor
+  vim.g.neovide_text_gamma = 0.0
+  vim.g.neovide_text_contrast = 0.5
+  vim.g.neovide_underline_stroke_scale = 1.0
+
+  -- animation
+  vim.g.neovide_position_animation_length = 0.15
+  vim.g.neovide_scroll_animation_length = 0.15
+  vim.g.neovide_scroll_animation_far_lines = 0.15
+  vim.g.neovide_cursor_animation_length = 0.0
+  vim.g.neovide_cursor_short_animation_length = 0.0
+  vim.g.neovide_cursor_trail_size = 0.0
+  vim.g.neovide_cursor_animate_in_insert_mode = false
+  vim.g.neovide_cursor_animate_command_line = false
+  vim.g.neovide_cursor_smooth_blink = false
+
+  -- others
+  vim.g.neovide_hide_mouse_when_typing = true
+  vim.g.neovide_input_ime = false
+
+  -- IME only work in Insert Mode
+  local function set_ime(args)
+    if args.event:match("Enter$") then
+      vim.g.neovide_input_ime = true
+    else
+      vim.g.neovide_input_ime = false
+    end
+  end
+  local ime_input = vim.api.nvim_create_augroup("ime_input", { clear = true })
+
+  vim.api.nvim_create_autocmd({ "InsertEnter", "InsertLeave" }, {
+    group = ime_input,
+    pattern = "*",
+    callback = set_ime
+  })
+
+  -- NOTE: Disabled
+  -- vim.api.nvim_create_autocmd({ "CmdlineEnter", "CmdlineLeave" }, {
+  --   group = ime_input,
+  --   pattern = "[/\\?]",
+  --   callback = set_ime
+  -- })
+end
 
 local function OSX()
   return vim.uv.os_uname().sysname == 'Darwin'
@@ -509,6 +553,18 @@ require('lazy').setup({
         },
       }
       require('onedark').load()
+
+      -- setup neovide window-title color after onedark loaded
+      if vim.g.neovide then
+        vim.g.neovide_title_background_color = string.format(
+          "%x",
+          vim.api.nvim_get_hl(0, {id=vim.api.nvim_get_hl_id_by_name("Normal")}).bg
+        )
+        vim.g.neovide_title_text_color = string.format(
+          "%x",
+          vim.api.nvim_get_hl(0, {id=vim.api.nvim_get_hl_id_by_name("Normal")}).fg
+        )
+      end
     end
   },
 
