@@ -1023,101 +1023,162 @@ require('lazy').setup({
   ------------------------------
 
   {
-    'hrsh7th/nvim-cmp',
-    dependencies = {
-      'hrsh7th/cmp-buffer',
-      'hrsh7th/cmp-path',
-      'hrsh7th/cmp-cmdline',
-      'L3MON4D3/LuaSnip',
-      'saadparwaiz1/cmp_luasnip',
-    },
-    config = function()
-      local cmp = require('cmp')
-      local luasnip = require('luasnip')
+    'saghen/blink.cmp',
+    -- DELME:
+    -- dependencies = {
+    --   'L3MON4D3/LuaSnip',
+    -- },
 
-      cmp.setup {
+    version = '1.*',
+
+    opts = {
+      -- 'default' (recommended) for mappings similar to built-in completions (C-y to accept)
+      -- 'super-tab' for mappings similar to vscode (tab to accept)
+      -- 'enter' for enter to accept
+      -- 'none' for no mappings
+      --
+      -- All presets have the following mappings:
+      -- C-space: Open menu or open docs if already open
+      -- C-n/C-p or Up/Down: Select next/previous item
+      -- C-e: Hide menu
+      -- C-k: Toggle signature help (if signature.enabled = true)
+      --
+      -- See :h blink-cmp-config-keymap for defining your own keymap
+      keymap = { preset = 'super-tab' },
+
+      appearance = {
+        -- 'mono' (default) for 'Nerd Font Mono' or 'normal' for 'Nerd Font'
+        -- Adjusts spacing to ensure icons are aligned
+        nerd_font_variant = 'mono'
+      },
+
+      completion = {
+        menu = { auto_show = false }, -- only show menu on manual <C-space>
+        ghost_text = { enabled = true, show_with_menu = false }, -- only show when menu is closed
+        documentation = { auto_show = false },
+      },
+
+      -- DELME:
+      -- snippets = {
+      --   expand = function(snippet)
+      --     require('luasnip').lsp_expand(snippet)
+      --   end,
+      -- },
+
+      sources = {
+        default = { 'lsp', 'path', 'snippets', 'buffer' },
+      },
+
+      cmdline = {
+        keymap = { preset = 'cmdline' },
         completion = {
-          completeopt = 'menu,menuone,noselect,noinsert',
+          menu = { auto_show = false },
+          ghost_text = { enabled = true }, -- only show when menu is closed
         },
+      },
 
-        mapping = cmp.mapping.preset.insert({
-          ['<C-Space>'] = cmp.mapping.complete(),
-          ['<CR>'] = cmp.mapping.confirm({ select = true }), -- Accept currently selected item. Set `select` to `false` to only confirm explicitly selected items.
-          ['<C-e>'] = cmp.mapping.abort(),
-          ['<C-b>'] = cmp.mapping.scroll_docs(-4),
-          ['<C-f>'] = cmp.mapping.scroll_docs(4),
-
-          -- next
-          ['<C-j>'] = cmp.mapping(function()
-            if cmp.visible() then
-              cmp.select_next_item({ behavior = cmp.SelectBehavior.Select })
-            end
-          end, { 'i', 's', 'c' }),
-
-          -- prev
-          ['<C-k>'] = cmp.mapping(function()
-            if cmp.visible() then
-              cmp.select_prev_item({ behavior = cmp.SelectBehavior.Select })
-            end
-          end, { 'i', 's', 'c' }),
-
-          -- Tab
-          ['<Tab>'] = cmp.mapping(function(fallback)
-            -- This little snippet will confirm with tab, and if no entry is selected, will confirm the first item
-            if cmp.visible() then
-              local entry = cmp.get_selected_entry()
-              if not entry then
-                cmp.select_next_item({ behavior = cmp.SelectBehavior.Select })
-              end
-              cmp.confirm()
-            else
-              fallback()
-            end
-          end, { 'i', 's', 'c' }),
-        }),
-
-        snippet = {
-          expand = function(args)
-            luasnip.lsp_expand(args.body)
-          end,
-        },
-
-        sources = cmp.config.sources({
-          { name = 'nvim_lsp' },
-          { name = 'path' },
-          { name = 'luasnip' },
-        }, {
-          { name = 'buffer' },
-        })
-      }
-
-      -- DELME: disable cause it will make cursor jump amongs multiple windows
-      -- Use buffer source for `/` and `?` (if you enabled `native_menu`, this won't work anymore).
-      -- cmp.setup.cmdline({ '/', '?' }, {
-      --   mapping = cmp.mapping.preset.cmdline(),
-      --   view = {
-      --     entries = { name = 'wildmenu', separator = ' | ' }
-      --   },
-      --   sources = {
-      --     { name = 'buffer' }
-      --   }
-      -- })
-
-      -- Use cmdline & path source for ':' (if you enabled `native_menu`, this won't work anymore).
-      cmp.setup.cmdline(':', {
-        mapping = cmp.mapping.preset.cmdline(),
-        view = {
-          entries = { name = 'wildmenu', separator = ' | ' }
-        },
-        sources = cmp.config.sources({
-          { name = 'path' }
-        }, {
-          { name = 'cmdline' }
-        }),
-        matching = { disallow_symbol_nonprefix_matching = false }
-      })
-    end,
+      fuzzy = { implementation = "prefer_rust_with_warning" }
+    },
+    opts_extend = { "sources.default" }
   },
+
+  -- DELME:
+  -- {
+  --   'hrsh7th/nvim-cmp',
+  --   dependencies = {
+  --     'hrsh7th/cmp-buffer',
+  --     'hrsh7th/cmp-path',
+  --     'hrsh7th/cmp-cmdline',
+  --     'L3MON4D3/LuaSnip',
+  --     'saadparwaiz1/cmp_luasnip',
+  --   },
+  --   config = function()
+  --     local cmp = require('cmp')
+  --     local luasnip = require('luasnip')
+
+  --     cmp.setup {
+  --       completion = {
+  --         completeopt = 'menu,menuone,noselect,noinsert',
+  --       },
+
+  --       mapping = cmp.mapping.preset.insert({
+  --         ['<C-Space>'] = cmp.mapping.complete(),
+  --         ['<CR>'] = cmp.mapping.confirm({ select = true }), -- Accept currently selected item. Set `select` to `false` to only confirm explicitly selected items.
+  --         ['<C-e>'] = cmp.mapping.abort(),
+  --         ['<C-b>'] = cmp.mapping.scroll_docs(-4),
+  --         ['<C-f>'] = cmp.mapping.scroll_docs(4),
+
+  --         -- next
+  --         ['<C-j>'] = cmp.mapping(function()
+  --           if cmp.visible() then
+  --             cmp.select_next_item({ behavior = cmp.SelectBehavior.Select })
+  --           end
+  --         end, { 'i', 's', 'c' }),
+
+  --         -- prev
+  --         ['<C-k>'] = cmp.mapping(function()
+  --           if cmp.visible() then
+  --             cmp.select_prev_item({ behavior = cmp.SelectBehavior.Select })
+  --           end
+  --         end, { 'i', 's', 'c' }),
+
+  --         -- Tab
+  --         ['<Tab>'] = cmp.mapping(function(fallback)
+  --           -- This little snippet will confirm with tab, and if no entry is selected, will confirm the first item
+  --           if cmp.visible() then
+  --             local entry = cmp.get_selected_entry()
+  --             if not entry then
+  --               cmp.select_next_item({ behavior = cmp.SelectBehavior.Select })
+  --             end
+  --             cmp.confirm()
+  --           else
+  --             fallback()
+  --           end
+  --         end, { 'i', 's', 'c' }),
+  --       }),
+
+  --       snippet = {
+  --         expand = function(args)
+  --           luasnip.lsp_expand(args.body)
+  --         end,
+  --       },
+
+  --       sources = cmp.config.sources({
+  --         { name = 'nvim_lsp' },
+  --         { name = 'path' },
+  --         { name = 'luasnip' },
+  --       }, {
+  --         { name = 'buffer' },
+  --       })
+  --     }
+
+  --     -- DELME: disable cause it will make cursor jump amongs multiple windows
+  --     -- Use buffer source for `/` and `?` (if you enabled `native_menu`, this won't work anymore).
+  --     -- cmp.setup.cmdline({ '/', '?' }, {
+  --     --   mapping = cmp.mapping.preset.cmdline(),
+  --     --   view = {
+  --     --     entries = { name = 'wildmenu', separator = ' | ' }
+  --     --   },
+  --     --   sources = {
+  --     --     { name = 'buffer' }
+  --     --   }
+  --     -- })
+
+  --     -- Use cmdline & path source for ':' (if you enabled `native_menu`, this won't work anymore).
+  --     cmp.setup.cmdline(':', {
+  --       mapping = cmp.mapping.preset.cmdline(),
+  --       view = {
+  --         entries = { name = 'wildmenu', separator = ' | ' }
+  --       },
+  --       sources = cmp.config.sources({
+  --         { name = 'path' }
+  --       }, {
+  --         { name = 'cmdline' }
+  --       }),
+  --       matching = { disallow_symbol_nonprefix_matching = false }
+  --     })
+  --   end,
+  -- },
 
   -- NOTE: Use this instead of  nvim-cmp cmdline({ '/', '?' }, ...)
   -- NOTE: nvim-cmp will random jump cursor when working with ex-gsearch window
@@ -1130,10 +1191,12 @@ require('lazy').setup({
   {
     'neovim/nvim-lspconfig',
     dependencies = {
-      'hrsh7th/cmp-nvim-lsp',
+      -- 'hrsh7th/cmp-nvim-lsp', -- DELME:
+      'saghen/blink.cmp'
     },
     config = function()
-      local capabilities = require('cmp_nvim_lsp').default_capabilities()
+      -- local capabilities = require('cmp_nvim_lsp').default_capabilities() -- DELME:
+      local capabilities = require('blink.cmp').get_lsp_capabilities()
 
       vim.lsp.config('clangd', {
         capabilities = capabilities,
