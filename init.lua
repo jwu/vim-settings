@@ -1044,7 +1044,12 @@ require('lazy').setup({
       -- C-k: Toggle signature help (if signature.enabled = true)
       --
       -- See :h blink-cmp-config-keymap for defining your own keymap
-      keymap = { preset = 'super-tab' },
+      keymap = {
+        preset = 'super-tab',
+        ['<Enter>'] = { 'select_and_accept', 'fallback' },
+        ['<C-k>'] = { 'select_prev', 'fallback_to_mappings' },
+        ['<C-j>'] = { 'select_next', 'fallback_to_mappings' },
+      },
 
       appearance = {
         -- 'mono' (default) for 'Nerd Font Mono' or 'normal' for 'Nerd Font'
@@ -1053,9 +1058,13 @@ require('lazy').setup({
       },
 
       completion = {
-        menu = { auto_show = false }, -- only show menu on manual <C-space>
-        ghost_text = { enabled = true, show_with_menu = false }, -- only show when menu is closed
+        -- only show menu on manual <C-space>
+        menu = { auto_show = false },
         documentation = { auto_show = false },
+        ghost_text = { enabled = true, show_with_menu = true },
+        list = {
+          selection = { preselect = true, auto_insert = false },
+        }
       },
 
       -- DELME:
@@ -1070,16 +1079,24 @@ require('lazy').setup({
       },
 
       cmdline = {
-        keymap = { preset = 'cmdline' },
+        enabled = true,
+        keymap = {
+          preset = 'cmdline',
+          ['<Up>'] = { 'select_prev', 'fallback' },
+          ['<Down>'] = { 'select_next', 'fallback' },
+        },
+        sources = { 'buffer', 'cmdline' },
         completion = {
           menu = { auto_show = false },
-          ghost_text = { enabled = true }, -- only show when menu is closed
+          ghost_text = { enabled = true },
+          list = {
+            selection = { preselect = true, auto_insert = false },
+          }
         },
       },
 
       fuzzy = { implementation = "prefer_rust_with_warning" }
     },
-    opts_extend = { "sources.default" }
   },
 
   -- DELME:
